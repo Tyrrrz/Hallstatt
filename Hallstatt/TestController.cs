@@ -250,9 +250,9 @@ namespace Hallstatt
         /// Signals that the current test should be skipped if the predicate evaluates to <code>true</code>.
         /// This method should be used within the body of a test.
         /// </summary>
-        public static void Skip(Func<bool> shouldSkip, string reason = "No reason specified")
+        public static void SkipIf(bool shouldSkip, string reason = "No reason specified")
         {
-            if (shouldSkip())
+            if (shouldSkip)
             {
                 throw new TestSkippedException(reason);
             }
@@ -263,6 +263,6 @@ namespace Hallstatt
         /// This method should be used within the body of a test.
         /// </summary>
         public static void Skip(string reason = "No reason specified") =>
-            Skip(() => true, reason);
+            SkipIf(true, reason);
     }
 }

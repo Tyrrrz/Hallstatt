@@ -230,7 +230,7 @@ namespace Hallstatt
         public static void Exists(this Assertions<FileSystemInfo> assertions)
         {
             if (!assertions.Source.Exists)
-                Assert.Fail($"Expected file path '{assertions.Source}' to exist.");
+                Assert.Fail($"Expected path '{assertions.Source}' to exist.");
         }
 
         /// <summary>

@@ -42,8 +42,7 @@ Test("Skipped test", () =>
     Assert.That(true).IsFalse();
 });
 
-Test(
-    "Test with traits",
+Test("Test with traits",
     o =>
     {
         o.Trait("Category", "SpecialTests");
