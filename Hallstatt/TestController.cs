@@ -44,7 +44,7 @@ namespace Hallstatt
                 .ToArray();
 
         /// <summary>
-        /// Clear all registered tests.
+        /// Clears all registered tests.
         /// </summary>
         public static void Clear()
         {
@@ -134,19 +134,20 @@ namespace Hallstatt
         /// Registers parametrized tests.
         /// </summary>
         public static void TestMany<TParam>(
-            Action<TestMetadataConfigurator> configure,
             IEnumerable<TParam> parameters,
+            Action<TParam, TestMetadataConfigurator> configure,
             Func<TParam, string> getTitle,
             Func<TParam, ValueTask> executeAsync)
         {
             if (Delegates.Add(executeAsync))
             {
-                var metadata = new TestMetadataConfigurator();
-                configure(metadata);
-
                 foreach (var p in parameters)
                 {
                     var parameter = p;
+
+                    var metadata = new TestMetadataConfigurator();
+                    configure(parameter, metadata);
+
                     var title = getTitle(parameter);
 
                     Tests.Add(new Test(
@@ -188,19 +189,20 @@ namespace Hallstatt
         /// Registers parametrized tests.
         /// </summary>
         public static void TestMany<TParam>(
-            Action<TestMetadataConfigurator> configure,
             IEnumerable<TParam> parameters,
+            Action<TParam, TestMetadataConfigurator> configure,
             Func<TParam, string> getTitle,
             Action<TParam> execute)
         {
             if (Delegates.Add(execute))
             {
-                var metadata = new TestMetadataConfigurator();
-                configure(metadata);
-
                 foreach (var p in parameters)
                 {
                     var parameter = p;
+
+                    var metadata = new TestMetadataConfigurator();
+                    configure(parameter, metadata);
+
                     var title = getTitle(parameter);
 
                     Tests.Add(new Test(
@@ -247,8 +249,8 @@ namespace Hallstatt
         }
 
         /// <summary>
-        /// Signals that the current test should be skipped if the predicate evaluates to <code>true</code>.
-        /// This method should be used within the body of a test.
+        /// Signals that the current test should be skipped if the condition evaluates to <code>true</code>.
+        /// This method should only be used within the body of a test.
         /// </summary>
         public static void SkipIf(bool shouldSkip, string reason = "No reason specified")
         {
@@ -260,7 +262,7 @@ namespace Hallstatt
 
         /// <summary>
         /// Signals that the current test should be skipped.
-        /// This method should be used within the body of a test.
+        /// This method should only be used within the body of a test.
         /// </summary>
         public static void Skip(string reason = "No reason specified") =>
             SkipIf(true, reason);
