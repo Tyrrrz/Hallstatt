@@ -5,13 +5,13 @@ using static Hallstatt.TestController;
 Test("Sum of 2 and 2 equals 4", () =>
 {
     var result = 2 + 2;
-    Assert.That(result).IsEqualTo(4);
+    Assert.That(result == 4);
 });
 
 Test("Sum of 2 and 2 equals 4 (async)", async () =>
 {
     var result = await Task.Run(() => 2 + 2);
-    Assert.That(result).IsEqualTo(4);
+    Assert.That(result == 4);
 });
 
 TestMany(
@@ -30,7 +30,7 @@ TestMany(
     p =>
     {
         var result = p.Left + p.Right;
-        Assert.That(result).IsEqualTo(p.Result);
+        Assert.That(result == p.Result);
     }
 );
 
@@ -39,7 +39,7 @@ Test("Skipped test", () =>
     Skip();
 
     // Never ran
-    Assert.That(true).IsFalse();
+    Assert.That(false);
 });
 
 Test("Test with traits",
@@ -49,6 +49,6 @@ Test("Test with traits",
     },
     () =>
     {
-        Assert.That(true).IsTrue();
+        Assert.That(true);
     }
 );
