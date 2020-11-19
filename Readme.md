@@ -175,7 +175,7 @@ TestMany(
 );
 ```
 
-Essentially, we registered 3 tests that validate the same code against different inputs. Running test discovery should show us the following:
+Essentially, we've registered 3 tests that validate the same code against different inputs. Running test discovery should show us the following:
 
 ```txt
 Microsoft (R) Test Execution Command Line Tool Version 16.8.0
@@ -329,11 +329,11 @@ TestMany(
 
         // Invalid
 
-        new {Input = "41.25; -120.9762", null},
-        new {Input = "-41.25 S, 120.9762 E", null},
-        new {Input = "41.25", null},
-        new {Input = "", null},
-        new {Input = null, null}
+        new {Input = "41.25; -120.9762", Output = default(GeoLocation?)},
+        new {Input = "-41.25 S, 120.9762 E", Output = default(GeoLocation?)},
+        new {Input = "41.25", Output = default(GeoLocation?)},
+        new {Input = "", Output = default(GeoLocation?)},
+        new {Input = default(string), Output = default(GeoLocation?)}
     },
 
     p => $"I can type in my location manually using standard notation ({p})",
