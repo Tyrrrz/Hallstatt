@@ -53,20 +53,13 @@ namespace Hallstatt.TestAdapter
             {
                 _cts.Token.ThrowIfCancellationRequested();
 
-                var testCase = CreateTestCase(test, test.Assembly.Location);
-
                 frameworkHandle.SendMessage(
                     TestMessageLevel.Informational,
-                    $"Running test '{test.Title}' ({testCase.Id}) from assembly '{test.Assembly.FullName}'."
+                    $"Running test '{test.Title}' ({test.Id}) from assembly '{test.Assembly.FullName}'."
                 );
 
-                var testResult = new TestResult(testCase)
-                {
-                    DisplayName = testCase.DisplayName,
-                    Outcome = TestOutcome.None,
-                    ComputerName = Environment.MachineName,
-                    StartTime = DateTimeOffset.Now
-                };
+                var testResult = CreateTestResult(test, test.Assembly.Location);
+                testResult.StartTime = DateTimeOffset.Now;
 
                 try
                 {
@@ -175,5 +168,23 @@ namespace Hallstatt.TestAdapter
 
             return testCase;
         }
+
+        private static TestResult CreateTestResult(TestCase testCase)
+        {
+            var testResult = new TestResult(testCase)
+            {
+                DisplayName = testCase.DisplayName,
+                Outcome = TestOutcome.None,
+                ComputerName = Environment.MachineName,
+                StartTime = DateTimeOffset.Now
+            };
+
+            testResult.Traits.AddRange(testCase.Traits);
+
+            return testResult;
+        }
+
+        private static TestResult CreateTestResult(Test test, string source) =>
+            CreateTestResult(CreateTestCase(test, source));
     }
 }

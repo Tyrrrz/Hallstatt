@@ -178,15 +178,14 @@ namespace Hallstatt.Tests
 
             registeredTests[1].Title.Should().Be("My test (3 4)");
             registeredTests[1].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
-            registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
+            registeredTests[1].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
             {
                 ["Foo"] = "3"
             });
 
             registeredTests[2].Title.Should().Be("My test (5 6)");
             registeredTests[2].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
-            registeredTests[2].Traits.Should().BeEmpty();
-            registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
+            registeredTests[2].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
             {
                 ["Foo"] = "5"
             });
@@ -222,15 +221,14 @@ namespace Hallstatt.Tests
 
             registeredTests[1].Title.Should().Be("My test (3 4)");
             registeredTests[1].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
-            registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
+            registeredTests[1].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
             {
                 ["Foo"] = "3"
             });
 
             registeredTests[2].Title.Should().Be("My test (5 6)");
             registeredTests[2].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
-            registeredTests[2].Traits.Should().BeEmpty();
-            registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
+            registeredTests[2].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
             {
                 ["Foo"] = "5"
             });
