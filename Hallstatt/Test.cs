@@ -14,6 +14,11 @@ namespace Hallstatt
         private readonly Func<ValueTask> _executeAsync;
 
         /// <summary>
+        /// Test ID.
+        /// </summary>
+        public Guid Id { get; }
+
+        /// <summary>
         /// Title of the test.
         /// </summary>
         public string Title { get; }
@@ -32,11 +37,13 @@ namespace Hallstatt
         /// Initializes an instance of <see cref="Test"/>.
         /// </summary>
         public Test(
+            Guid id,
             string title,
             Assembly assembly,
             IReadOnlyDictionary<string, string?> traits,
             Func<ValueTask> executeAsync)
         {
+            Id = id;
             Title = title;
             Assembly = assembly;
             Traits = traits;

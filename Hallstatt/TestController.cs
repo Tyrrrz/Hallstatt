@@ -57,6 +57,7 @@ namespace Hallstatt
             configure?.Invoke(metadata);
 
             Tests.Add(new Test(
+                Guid.NewGuid(),
                 title,
                 assembly,
                 metadata.GetTraits(),
@@ -111,6 +112,7 @@ namespace Hallstatt
                 var title = getTitle(parameter);
 
                 Tests.Add(new Test(
+                    Guid.NewGuid(),
                     title,
                     assembly,
                     metadata.GetTraits(),

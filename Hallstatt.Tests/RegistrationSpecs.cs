@@ -22,12 +22,9 @@ namespace Hallstatt.Tests
 
             // Assert
             registeredTests.Should().ContainSingle();
-            registeredTests.Should().AllBeEquivalentTo(new Test(
-                "My test",
-                typeof(RegistrationSpecs).Assembly,
-                new Dictionary<string, string?>(),
-                () => default
-            ));
+            registeredTests[0].Title.Should().Be("My test");
+            registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+            registeredTests[0].Traits.Should().BeEmpty();
         }
 
         [Fact]
@@ -44,16 +41,13 @@ namespace Hallstatt.Tests
 
             // Assert
             registeredTests.Should().ContainSingle();
-            registeredTests.Should().AllBeEquivalentTo(new Test(
-                "My test",
-                typeof(RegistrationSpecs).Assembly,
-                new Dictionary<string, string?>
-                {
-                    ["foo"] = "bar",
-                    ["baz"] = null
-                },
-                () => default
-            ));
+            registeredTests[0].Title.Should().Be("My test");
+            registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+            registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string?>
+            {
+                ["foo"] = "bar",
+                ["baz"] = null
+            });
         }
 
         [Fact]
@@ -70,16 +64,13 @@ namespace Hallstatt.Tests
 
             // Assert
             registeredTests.Should().ContainSingle();
-            registeredTests.Should().AllBeEquivalentTo(new Test(
-                "My test",
-                typeof(RegistrationSpecs).Assembly,
-                new Dictionary<string, string?>
-                {
-                    ["foo"] = "bar",
-                    ["baz"] = null
-                },
-                () => default
-            ));
+            registeredTests[0].Title.Should().Be("My test");
+            registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+            registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string?>
+            {
+                ["foo"] = "bar",
+                ["baz"] = null
+            });
         }
 
         [Fact]
@@ -143,25 +134,18 @@ namespace Hallstatt.Tests
 
             // Assert
             registeredTests.Should().HaveCount(3);
-            registeredTests.Should().BeEquivalentTo(
-                new Test(
-                    "My test (1 2)",
-                    typeof(RegistrationSpecs).Assembly,
-                    new Dictionary<string, string?>(),
-                    () => default),
 
-                new Test(
-                    "My test (3 4)",
-                    typeof(RegistrationSpecs).Assembly,
-                    new Dictionary<string, string?>(),
-                    () => default),
+            registeredTests[0].Title.Should().Be("My test (1 2)");
+            registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+            registeredTests[0].Traits.Should().BeEmpty();
 
-                new Test(
-                    "My test (5 6)",
-                    typeof(RegistrationSpecs).Assembly,
-                    new Dictionary<string, string?>(),
-                    () => default)
-            );
+            registeredTests[1].Title.Should().Be("My test (3 4)");
+            registeredTests[1].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+            registeredTests[1].Traits.Should().BeEmpty();
+
+            registeredTests[2].Title.Should().Be("My test (5 6)");
+            registeredTests[2].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+            registeredTests[2].Traits.Should().BeEmpty();
         }
 
         [Fact]
@@ -184,34 +168,28 @@ namespace Hallstatt.Tests
 
             // Assert
             registeredTests.Should().HaveCount(3);
-            registeredTests.Should().BeEquivalentTo(
-                new Test(
-                    "My test (1 2)",
-                    typeof(RegistrationSpecs).Assembly,
-                    new Dictionary<string, string?>
-                    {
-                        ["Foo"] = "1"
-                    },
-                    () => default),
 
-                new Test(
-                    "My test (3 4)",
-                    typeof(RegistrationSpecs).Assembly,
-                    new Dictionary<string, string?>
-                    {
-                        ["Foo"] = "3"
-                    },
-                    () => default),
+            registeredTests[0].Title.Should().Be("My test (1 2)");
+            registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+            registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
+            {
+                ["Foo"] = "1"
+            });
 
-                new Test(
-                    "My test (5 6)",
-                    typeof(RegistrationSpecs).Assembly,
-                    new Dictionary<string, string?>
-                    {
-                        ["Foo"] = "5"
-                    },
-                    () => default)
-            );
+            registeredTests[1].Title.Should().Be("My test (3 4)");
+            registeredTests[1].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+            registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
+            {
+                ["Foo"] = "3"
+            });
+
+            registeredTests[2].Title.Should().Be("My test (5 6)");
+            registeredTests[2].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+            registeredTests[2].Traits.Should().BeEmpty();
+            registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
+            {
+                ["Foo"] = "5"
+            });
         }
 
         [Fact]
@@ -234,34 +212,28 @@ namespace Hallstatt.Tests
 
             // Assert
             registeredTests.Should().HaveCount(3);
-            registeredTests.Should().BeEquivalentTo(
-                new Test(
-                    "My test (1 2)",
-                    typeof(RegistrationSpecs).Assembly,
-                    new Dictionary<string, string?>
-                    {
-                        ["Foo"] = "1"
-                    },
-                    () => default),
 
-                new Test(
-                    "My test (3 4)",
-                    typeof(RegistrationSpecs).Assembly,
-                    new Dictionary<string, string?>
-                    {
-                        ["Foo"] = "3"
-                    },
-                    () => default),
+            registeredTests[0].Title.Should().Be("My test (1 2)");
+            registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+            registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
+            {
+                ["Foo"] = "1"
+            });
 
-                new Test(
-                    "My test (5 6)",
-                    typeof(RegistrationSpecs).Assembly,
-                    new Dictionary<string, string?>
-                    {
-                        ["Foo"] = "5"
-                    },
-                    () => default)
-            );
+            registeredTests[1].Title.Should().Be("My test (3 4)");
+            registeredTests[1].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+            registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
+            {
+                ["Foo"] = "3"
+            });
+
+            registeredTests[2].Title.Should().Be("My test (5 6)");
+            registeredTests[2].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+            registeredTests[2].Traits.Should().BeEmpty();
+            registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
+            {
+                ["Foo"] = "5"
+            });
         }
 
         [Fact]

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using Hallstatt.TestAdapter.Internal.Extensions;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
@@ -23,26 +24,6 @@ namespace Hallstatt.TestAdapter
 
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
-        private void DiscoverTests(
-            string source,
-            IDiscoveryContext discoveryContext,
-            IMessageLogger logger,
-            ITestCaseDiscoverySink discoverySink)
-        {
-            logger.SendMessage(
-                TestMessageLevel.Informational,
-                $"Discovering tests in '{source}'."
-            );
-
-            foreach (var test in LoadTestsFromAssembly(source))
-            {
-                _cts.Token.ThrowIfCancellationRequested();
-
-                var testCase = CreateTestCase(test, source);
-                discoverySink.SendTestCase(testCase);
-            }
-        }
-
         /// <inheritdoc />
         public void DiscoverTests(
             IEnumerable<string> sources,
@@ -54,29 +35,29 @@ namespace Hallstatt.TestAdapter
             {
                 _cts.Token.ThrowIfCancellationRequested();
 
-                DiscoverTests(source, discoveryContext, logger, discoverySink);
+                foreach (var test in LoadTestsFromAssembly(source))
+                {
+                    _cts.Token.ThrowIfCancellationRequested();
+                    discoverySink.SendTestCase(CreateTestCase(test, source));
+                }
             }
         }
 
-        private void RunTests(
-            string source,
+        // Accessed from tests
+        internal void RunTests(
+            IReadOnlyList<Test> tests,
             IRunContext runContext,
             IFrameworkHandle frameworkHandle)
         {
-            frameworkHandle.SendMessage(
-                TestMessageLevel.Informational,
-                $"Running tests in '{source}'."
-            );
-
-            foreach (var test in LoadTestsFromAssembly(source))
+            foreach (var test in tests)
             {
                 _cts.Token.ThrowIfCancellationRequested();
 
-                var testCase = CreateTestCase(test, source);
+                var testCase = CreateTestCase(test, test.Assembly.Location);
 
                 frameworkHandle.SendMessage(
                     TestMessageLevel.Informational,
-                    $"Running test '{test.Title}' ({testCase.Id}) from assembly '{source}'."
+                    $"Running test '{test.Title}' ({testCase.Id}) from assembly '{test.Assembly.FullName}'."
                 );
 
                 var testResult = new TestResult(testCase)
@@ -125,7 +106,8 @@ namespace Hallstatt.TestAdapter
             {
                 _cts.Token.ThrowIfCancellationRequested();
 
-                RunTests(source, runContext, frameworkHandle);
+                var tests = LoadTestsFromAssembly(source);
+                RunTests(tests, runContext, frameworkHandle);
             }
         }
 
@@ -135,21 +117,15 @@ namespace Hallstatt.TestAdapter
             IRunContext runContext,
             IFrameworkHandle frameworkHandle)
         {
-            foreach (var testCase in testCases)
+            foreach (var sourceGroup in testCases.GroupBy(tc => tc.Source, StringComparer.OrdinalIgnoreCase))
             {
                 _cts.Token.ThrowIfCancellationRequested();
 
-                if (string.IsNullOrWhiteSpace(testCase.Source))
-                {
-                    frameworkHandle.SendMessage(
-                        TestMessageLevel.Error,
-                        $"Test case {testCase.Id} / '{testCase.FullyQualifiedName}' is missing source information."
-                    );
+                var source = sourceGroup.Key;
+                var testIds = sourceGroup.Select(tc => tc.Id).ToHashSet();
+                var tests = LoadTestsFromAssembly(source).Where(t => testIds.Contains(t.Id)).ToArray();
 
-                    continue;
-                }
-
-                RunTests(testCase.Source, runContext, frameworkHandle);
+                RunTests(tests, runContext, frameworkHandle);
             }
         }
 
@@ -166,21 +142,13 @@ namespace Hallstatt.TestAdapter
         {
             TestController.Clear();
 
-            var assembly = Assembly.LoadFile(source);
-            if (assembly == null)
-            {
-                throw new InvalidOperationException(
-                    $"Attempt to load assembly '{source}' returned null."
-                );
-            }
+            var assembly =
+                Assembly.LoadFile(source) ??
+                throw new InvalidOperationException($"Attempt to load assembly '{source}' returned null.");
 
-            var entryPoint = assembly.EntryPoint;
-            if (entryPoint == null)
-            {
-                throw new InvalidOperationException(
-                    $"Test assembly '{source}' must define a valid entry point."
-                );
-            }
+            var entryPoint =
+                assembly.EntryPoint ??
+                throw new InvalidOperationException($"Test assembly '{source}' must define a valid entry point.");
 
             // Entry point has an optional parameter that corresponds to command line arguments
             var parameters = entryPoint.GetParameters().Any()
@@ -196,6 +164,7 @@ namespace Hallstatt.TestAdapter
         {
             var testCase = new TestCase
             {
+                Id = test.Id,
                 ExecutorUri = Uri,
                 FullyQualifiedName = test.Title,
                 DisplayName = test.Title,

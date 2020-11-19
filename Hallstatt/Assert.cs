@@ -11,7 +11,7 @@ namespace Hallstatt
         /// <summary>
         /// Initializes an instance of <see cref="AssertionException"/>.
         /// </summary>
-        public AssertionException(string message)
+        public AssertionException(string message = "")
             : base(message) {}
     }
 

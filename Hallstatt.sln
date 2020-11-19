@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hallstatt.TestAdapter", "Ha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hallstatt.Demo", "Hallstatt.Demo\Hallstatt.Demo.csproj", "{437C54D5-B25A-46B0-875D-84FD04A9AD8C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hallstatt.TestAdapter.Tests", "Hallstatt.TestAdapter.Tests\Hallstatt.TestAdapter.Tests.csproj", "{2EA93B93-4A08-47CE-900F-5C1B1DFA9CBE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,5 +81,17 @@ Global
 		{437C54D5-B25A-46B0-875D-84FD04A9AD8C}.Release|x64.Build.0 = Release|Any CPU
 		{437C54D5-B25A-46B0-875D-84FD04A9AD8C}.Release|x86.ActiveCfg = Release|Any CPU
 		{437C54D5-B25A-46B0-875D-84FD04A9AD8C}.Release|x86.Build.0 = Release|Any CPU
+		{2EA93B93-4A08-47CE-900F-5C1B1DFA9CBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EA93B93-4A08-47CE-900F-5C1B1DFA9CBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EA93B93-4A08-47CE-900F-5C1B1DFA9CBE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2EA93B93-4A08-47CE-900F-5C1B1DFA9CBE}.Debug|x64.Build.0 = Debug|Any CPU
+		{2EA93B93-4A08-47CE-900F-5C1B1DFA9CBE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2EA93B93-4A08-47CE-900F-5C1B1DFA9CBE}.Debug|x86.Build.0 = Debug|Any CPU
+		{2EA93B93-4A08-47CE-900F-5C1B1DFA9CBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EA93B93-4A08-47CE-900F-5C1B1DFA9CBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EA93B93-4A08-47CE-900F-5C1B1DFA9CBE}.Release|x64.ActiveCfg = Release|Any CPU
+		{2EA93B93-4A08-47CE-900F-5C1B1DFA9CBE}.Release|x64.Build.0 = Release|Any CPU
+		{2EA93B93-4A08-47CE-900F-5C1B1DFA9CBE}.Release|x86.ActiveCfg = Release|Any CPU
+		{2EA93B93-4A08-47CE-900F-5C1B1DFA9CBE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
