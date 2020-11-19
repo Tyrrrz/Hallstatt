@@ -257,3 +257,92 @@ Traits can be used, among other things, for [filtered test runs](https://docs.mi
 ```txt
 dotnet test --filter Category=MySpecialTests
 ```
+
+### Comparison with the traditional approach
+
+To understand the advantages of using Hallstatt, let's consider how the same test can be implemented using different frameworks. For example, here is a simple parametrized test written in xUnit:
+
+```csharp
+public static TheoryData<string?, GeoLocation?> GeoLocationParseTestCases =>
+    new TheoryData<string?, GeoLocation?>
+    {
+        // Valid
+
+        {"41.25 -120.9762", new GeoLocation(41.25, -120.9762)},
+        {"41.25, -120.9762", new GeoLocation(41.25, -120.9762)},
+        {"41.25,-120.9762", new GeoLocation(41.25, -120.9762)},
+        {"-41.25, -120.9762", new GeoLocation(-41.25, -120.9762)},
+        {"41.25, 120.9762", new GeoLocation(41.25, 120.9762)},
+        {"41.25°N, 120.9762°W", new GeoLocation(41.25, -120.9762)},
+        {"41.25N 120.9762W", new GeoLocation(41.25, -120.9762)},
+        {"41.25N, 120.9762W", new GeoLocation(41.25, -120.9762)},
+        {"41.25 N, 120.9762 W", new GeoLocation(41.25, -120.9762)},
+        {"41.25 S, 120.9762 W", new GeoLocation(-41.25, -120.9762)},
+        {"41.25 S, 120.9762 E", new GeoLocation(-41.25, 120.9762)},
+        {"41, 120", new GeoLocation(41, 120)},
+        {"-41, -120", new GeoLocation(-41, -120)},
+        {"41 N, 120 E", new GeoLocation(41, 120)},
+        {"41 N, 120 W", new GeoLocation(41, -120)},
+
+        // Invalid
+
+        {"41.25; -120.9762", null},
+        {"-41.25 S, 120.9762 E", null},
+        {"41.25", null},
+        {"", null},
+        {null, null}
+    };
+
+[Theory]
+[MemberData(nameof(GeoLocationParseTestCases))]
+public void I_can_type_in_my_location_manually_using_standard_notation(
+    string? str, GeoLocation? expectedResult)
+{
+    // Act & assert
+    GeoLocation.TryParse(str).Should().Be(expectedResult);
+}
+``` 
+
+And here is the same test defined in Hallstatt:
+
+```csharp
+TestMany(
+    new[]
+    {
+        // Valid
+        
+        new {Input = "41.25 -120.9762", Output = new GeoLocation(41.25, -120.9762)},
+        new {Input = "41.25, -120.9762", Output = new GeoLocation(41.25, -120.9762)},
+        new {Input = "41.25,-120.9762", Output = new GeoLocation(41.25, -120.9762)},
+        new {Input = "-41.25, -120.9762", Output = new GeoLocation(-41.25, -120.9762)},
+        new {Input = "41.25, 120.9762", Output = new GeoLocation(41.25, 120.9762)},
+        new {Input = "41.25°N, 120.9762°W", Output = new GeoLocation(41.25, -120.9762)},
+        new {Input = "41.25N 120.9762W", Output = new GeoLocation(41.25, -120.9762)},
+        new {Input = "41.25N, 120.9762W", Output = new GeoLocation(41.25, -120.9762)},
+        new {Input = "41.25 N, 120.9762 W", Output = new GeoLocation(41.25, -120.9762)},
+        new {Input = "41.25 S, 120.9762 W", Output = new GeoLocation(-41.25, -120.9762)},
+        new {Input = "41.25 S, 120.9762 E", Output = new GeoLocation(-41.25, 120.9762)},
+        new {Input = "41, 120", Output = new GeoLocation(41, 120)},
+        new {Input = "-41, -120", Output = new GeoLocation(-41, -120)},
+        new {Input = "41 N, 120 E", Output = new GeoLocation(41, 120)},
+        new {Input = "41 N, 120 W", Output = new GeoLocation(41, -120)},
+
+        // Invalid
+
+        new {Input = "41.25; -120.9762", null},
+        new {Input = "-41.25 S, 120.9762 E", null},
+        new {Input = "41.25", null},
+        new {Input = "", null},
+        new {Input = null, null}
+    },
+
+    p => $"I can type in my location manually using standard notation ({p})",
+
+    p =>
+    {
+        GeoLocation.TryParse(p.Input).Should().Be(p.Output);
+    }
+);
+```
+
+As you can see, the second approach has the advantage of being more localized, type-safe (without the need for analyzers), and requires less code. Additionally, by not relying on methods, Hallstatt tests can use normal human-readable strings in test names without having to rely on special transformations.
