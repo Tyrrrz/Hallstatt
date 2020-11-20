@@ -95,14 +95,14 @@ namespace Hallstatt.TestAdapter.Tests
             // Arrange
             TestController.Test(
                 "Test 1",
-                o => o.Trait("foo", "bar"),
-                () => TestController.Skip()
+                o => o.Skip().Trait("foo", "bar"),
+                () => { }
             );
 
             TestController.Test(
                 "Test 2",
-                o => o.Trait("foo", "baz"),
-                () => TestController.SkipIf(true)
+                o => o.Skip().Trait("foo", "baz"),
+                () => { }
             );
 
             var bridge = new TestExecutor();

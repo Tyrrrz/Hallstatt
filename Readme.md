@@ -189,28 +189,27 @@ The following Tests are available:
 
 ### Skipping tests
 
-Tests can be skipped at any point by calling `Skip()` or `SkipIf(...)`:
+Tests can be skipped:
 
 ```csharp
-Test("Skipped test", () =>
+Test("Skipped test", o => o.Skip(), () =>
 {
-    Skip("Not implemented yet");
-    
     // Not going to be executed
     Assert.That(false);
 });
 
-Test("Conditionally skipped test", () =>
-{
-    // Skip when not running on Windows
-    SkipIf(!RuntimeInformation.IsOSPlatform(OSPlatform.Windows));
-    
-    var registry = Registry.CurrentUser.OpenSubKey("foo");
-    Assert.That(registry.GetValue() != null);
-});
-```
+Test("Conditionally skipped test",
 
-Internally, `Skip()` and `SkipIf(...)` throw `TestSkippedException` which is special cased by the test adapter. This exception causes the test to be reported as skipped instead of failed when it is thrown.
+    // Skip when not running on Windows
+    o => o.Skip(!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)),
+
+    () =>
+    {
+        var registry = Registry.CurrentUser.OpenSubKey("foo");
+        Assert.That(registry.GetValue() != null);
+    }
+);
+```
 
 ### Assigning traits
 

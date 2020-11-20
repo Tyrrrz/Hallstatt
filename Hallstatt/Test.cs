@@ -34,6 +34,11 @@ namespace Hallstatt
         public IReadOnlyDictionary<string, string?> Traits { get; }
 
         /// <summary>
+        /// Whether the test is skipped.
+        /// </summary>
+        public bool IsSkipped { get; }
+
+        /// <summary>
         /// Initializes an instance of <see cref="Test"/>.
         /// </summary>
         public Test(
@@ -41,12 +46,14 @@ namespace Hallstatt
             string title,
             Assembly assembly,
             IReadOnlyDictionary<string, string?> traits,
+            bool isSkipped,
             Func<ValueTask> executeAsync)
         {
             Id = id;
             Title = title;
             Assembly = assembly;
             Traits = traits;
+            IsSkipped = isSkipped;
             _executeAsync = executeAsync;
         }
 

@@ -34,10 +34,8 @@ TestMany(
     }
 );
 
-Test("Skipped test", () =>
+Test("Skipped test", o => o.Skip(), () =>
 {
-    Skip();
-
     // Never ran
     Assert.That(false);
 });

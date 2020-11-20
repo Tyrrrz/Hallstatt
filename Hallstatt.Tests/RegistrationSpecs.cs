@@ -25,6 +25,7 @@ namespace Hallstatt.Tests
             registeredTests[0].Title.Should().Be("My test");
             registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
             registeredTests[0].Traits.Should().BeEmpty();
+            registeredTests[0].IsSkipped.Should().BeFalse();
         }
 
         [Fact]
@@ -48,6 +49,7 @@ namespace Hallstatt.Tests
                 ["foo"] = "bar",
                 ["baz"] = null
             });
+            registeredTests[0].IsSkipped.Should().BeFalse();
         }
 
         [Fact]
@@ -71,6 +73,7 @@ namespace Hallstatt.Tests
                 ["foo"] = "bar",
                 ["baz"] = null
             });
+            registeredTests[0].IsSkipped.Should().BeFalse();
         }
 
         [Fact]
@@ -138,14 +141,17 @@ namespace Hallstatt.Tests
             registeredTests[0].Title.Should().Be("My test (1 2)");
             registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
             registeredTests[0].Traits.Should().BeEmpty();
+            registeredTests[0].IsSkipped.Should().BeFalse();
 
             registeredTests[1].Title.Should().Be("My test (3 4)");
             registeredTests[1].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
             registeredTests[1].Traits.Should().BeEmpty();
+            registeredTests[1].IsSkipped.Should().BeFalse();
 
             registeredTests[2].Title.Should().Be("My test (5 6)");
             registeredTests[2].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
             registeredTests[2].Traits.Should().BeEmpty();
+            registeredTests[2].IsSkipped.Should().BeFalse();
         }
 
         [Fact]
@@ -175,6 +181,7 @@ namespace Hallstatt.Tests
             {
                 ["Foo"] = "1"
             });
+            registeredTests[0].IsSkipped.Should().BeFalse();
 
             registeredTests[1].Title.Should().Be("My test (3 4)");
             registeredTests[1].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
@@ -182,6 +189,7 @@ namespace Hallstatt.Tests
             {
                 ["Foo"] = "3"
             });
+            registeredTests[1].IsSkipped.Should().BeFalse();
 
             registeredTests[2].Title.Should().Be("My test (5 6)");
             registeredTests[2].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
@@ -189,6 +197,7 @@ namespace Hallstatt.Tests
             {
                 ["Foo"] = "5"
             });
+            registeredTests[2].IsSkipped.Should().BeFalse();
         }
 
         [Fact]
@@ -218,6 +227,7 @@ namespace Hallstatt.Tests
             {
                 ["Foo"] = "1"
             });
+            registeredTests[0].IsSkipped.Should().BeFalse();
 
             registeredTests[1].Title.Should().Be("My test (3 4)");
             registeredTests[1].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
@@ -225,6 +235,7 @@ namespace Hallstatt.Tests
             {
                 ["Foo"] = "3"
             });
+            registeredTests[1].IsSkipped.Should().BeFalse();
 
             registeredTests[2].Title.Should().Be("My test (5 6)");
             registeredTests[2].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
@@ -232,6 +243,7 @@ namespace Hallstatt.Tests
             {
                 ["Foo"] = "5"
             });
+            registeredTests[2].IsSkipped.Should().BeFalse();
         }
 
         [Fact]
@@ -285,54 +297,6 @@ namespace Hallstatt.Tests
 
             // Assert
             executeCount.Should().Be(3);
-        }
-
-        [Fact]
-        public async Task I_can_skip_a_test()
-        {
-            // Arrange
-            TestController.Test(
-                "My test",
-                () => TestController.Skip()
-            );
-
-            // Act & assert
-            await Xunit.Assert.ThrowsAsync<TestSkippedException>(async () =>
-            {
-                foreach (var test in TestController.GetRegisteredTests())
-                    await test.ExecuteAsync();
-            });
-        }
-
-        [Fact]
-        public async Task I_can_conditionally_skip_a_test_and_it_stops_if_the_condition_is_true()
-        {
-            // Arrange
-            TestController.Test(
-                "My test",
-                () => TestController.SkipIf(true)
-            );
-
-            // Act & assert
-            await Xunit.Assert.ThrowsAsync<TestSkippedException>(async () =>
-            {
-                foreach (var test in TestController.GetRegisteredTests())
-                    await test.ExecuteAsync();
-            });
-        }
-
-        [Fact]
-        public async Task I_can_conditionally_skip_a_test_and_it_continue_if_the_condition_is_false()
-        {
-            // Arrange
-            TestController.Test(
-                "My test",
-                () => TestController.SkipIf(false)
-            );
-
-            // Act & assert (no exception)
-            foreach (var test in TestController.GetRegisteredTests())
-                await test.ExecuteAsync();
         }
     }
 }

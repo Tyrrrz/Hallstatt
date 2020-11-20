@@ -63,15 +63,16 @@ namespace Hallstatt.TestAdapter
 
                 try
                 {
-                    test.ExecuteAsync().GetAwaiter().GetResult();
+                    if (!test.IsSkipped)
+                    {
+                        test.ExecuteAsync().GetAwaiter().GetResult();
 
-                    testResult.Outcome = TestOutcome.Passed;
-                }
-                catch (TestSkippedException ex)
-                {
-                    testResult.Outcome = TestOutcome.Skipped;
-                    testResult.ErrorMessage = ex.Message;
-                    testResult.ErrorStackTrace = ex.StackTrace;
+                        testResult.Outcome = TestOutcome.Passed;
+                    }
+                    else
+                    {
+                        testResult.Outcome = TestOutcome.Skipped;
+                    }
                 }
                 catch (Exception ex)
                 {

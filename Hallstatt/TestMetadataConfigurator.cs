@@ -9,6 +9,7 @@ namespace Hallstatt
     public class TestMetadataConfigurator
     {
         private readonly Dictionary<string, string?> _traits = new Dictionary<string, string?>(StringComparer.Ordinal);
+        private bool _isSkipped;
 
         /// <summary>
         /// Adds a trait to the test.
@@ -19,6 +20,17 @@ namespace Hallstatt
             return this;
         }
 
+        /// <summary>
+        /// Instructs the test to be skipped (conditionally).
+        /// </summary>
+        public TestMetadataConfigurator Skip(bool condition = true)
+        {
+            _isSkipped = condition;
+            return this;
+        }
+
         internal IReadOnlyDictionary<string, string?> GetTraits() => _traits;
+
+        internal bool GetIsSkipped() => _isSkipped;
     }
 }
