@@ -1,5 +1,6 @@
 using System;
 using FluentAssertions;
+using Hallstatt.Assertions;
 using Hallstatt.TestAdapter.Tests.Fakes;
 using Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Adapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;

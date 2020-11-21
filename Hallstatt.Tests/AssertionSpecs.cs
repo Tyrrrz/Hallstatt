@@ -1,6 +1,9 @@
 using System.IO;
 using System.Threading.Tasks;
+using Hallstatt.Assertions;
 using Xunit;
+using SutAssert = Hallstatt.Assertions.Assert;
+using Assert = Xunit.Assert;
 
 namespace Hallstatt.Tests
 {
@@ -9,77 +12,77 @@ namespace Hallstatt.Tests
         [Fact]
         public void I_can_manually_report_assertion_failure()
         {
-            Xunit.Assert.Throws<AssertionException>(() => Assert.Fail("Test"));
+            Assert.Throws<AssertionException>(() => SutAssert.Fail("Test"));
         }
 
         [Fact]
         public void I_can_assert_a_condition_and_get_no_error_if_it_is_true()
         {
-            Assert.That(true);
+            SutAssert.That(true);
         }
 
         [Fact]
         public void I_can_assert_a_condition_and_get_an_error_if_it_is_false()
         {
-            Xunit.Assert.Throws<AssertionException>(
-                () => Assert.That(false)
+            Assert.Throws<AssertionException>(
+                () => SutAssert.That(false)
             );
         }
 
         [Fact]
         public void I_can_assert_an_exception_and_get_no_error_if_the_expected_exception_is_thrown()
         {
-            Assert.Throws<IOException>(() => throw new IOException());
+            SutAssert.Throws<IOException>(() => throw new IOException());
         }
 
         [Fact]
         public void I_can_assert_an_exception_and_get_an_error_if_no_exception_was_thrown()
         {
-            Xunit.Assert.Throws<AssertionException>(
-                () => Assert.Throws<IOException>(() => {})
+            Assert.Throws<AssertionException>(
+                () => SutAssert.Throws<IOException>(() => {})
             );
         }
 
         [Fact]
         public void I_can_assert_an_exception_and_get_an_error_if_another_was_thrown()
         {
-            Xunit.Assert.Throws<AssertionException>(
-                () => Assert.Throws<IOException>(() => throw new FileNotFoundException())
+            Assert.Throws<AssertionException>(
+                () => SutAssert.Throws<IOException>(() => throw new FileNotFoundException())
             );
         }
 
         [Fact]
         public void I_can_assert_a_derived_exception_and_get_no_error_if_derived_exception_was_thrown()
         {
-            Assert.Throws<IOException>(() => throw new FileNotFoundException(), true);
+            SutAssert.Throws<IOException>(() => throw new FileNotFoundException(), true);
         }
 
         [Fact]
         public async Task I_can_assert_an_async_exception_and_get_no_error_if_the_expected_exception_is_thrown()
         {
-            await Assert.ThrowsAsync<IOException>(() => Task.FromException(new IOException()));
+            await SutAssert.ThrowsAsync<IOException>(() => Task.FromException(new IOException()));
         }
 
         [Fact]
         public async Task I_can_assert_an_async_exception_and_get_an_error_if_no_exception_was_thrown()
         {
-            await Xunit.Assert.ThrowsAsync<AssertionException>(
-                () => Assert.ThrowsAsync<IOException>(() => Task.CompletedTask)
+            await Assert.ThrowsAsync<AssertionException>(
+                () => SutAssert.ThrowsAsync<IOException>(() => Task.CompletedTask)
             );
         }
 
         [Fact]
         public async Task I_can_assert_an_async_exception_and_get_an_error_if_another_was_thrown()
         {
-            await Xunit.Assert.ThrowsAsync<AssertionException>(
-                () => Assert.ThrowsAsync<IOException>(() => Task.FromException(new FileNotFoundException()))
+            await Assert.ThrowsAsync<AssertionException>(
+                () => SutAssert.ThrowsAsync<IOException>(() => Task.FromException(new FileNotFoundException()))
             );
         }
 
         [Fact]
         public async Task I_can_assert_a_derived_async_exception_and_get_no_error_if_derived_exception_was_thrown()
         {
-            await Assert.ThrowsAsync<IOException>(() => Task.FromException(new FileNotFoundException()), true);
+            await SutAssert.ThrowsAsync<IOException>(() => Task.FromException(new FileNotFoundException()), true);
         }
     }
 }

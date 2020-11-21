@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Hallstatt;
+using Hallstatt.Assertions;
 using static Hallstatt.TestController;
 
 Test("Sum of 2 and 2 equals 4", () =>

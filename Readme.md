@@ -118,6 +118,8 @@ Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration:
 Hallstatt comes with a basic assertion module represented by the `Assert` class:
 
 ```csharp
+using Hallstatt.Assertions;
+
 Test("My test", () =>
 {
     Assert.That(1 == 2);
