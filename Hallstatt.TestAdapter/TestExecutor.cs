@@ -43,50 +43,66 @@ namespace Hallstatt.TestAdapter
             }
         }
 
+        private void RunTest(
+            Test test,
+            IRunContext runContext,
+            IFrameworkHandle frameworkHandle)
+        {
+            frameworkHandle.SendMessage(
+                TestMessageLevel.Informational,
+                $"Running test '{test.Title}' ({test.Id}) from assembly '{test.Assembly.FullName}'."
+            );
+
+            var testResult = CreateTestResult(test, test.Assembly.Location);
+            testResult.StartTime = DateTimeOffset.Now;
+
+            try
+            {
+                if (!test.IsSkipped)
+                {
+                    test.ExecuteAsync().GetAwaiter().GetResult();
+
+                    testResult.Outcome = TestOutcome.Passed;
+                }
+                else
+                {
+                    testResult.Outcome = TestOutcome.Skipped;
+                }
+            }
+            catch (Exception ex)
+            {
+                testResult.Outcome = TestOutcome.Failed;
+                testResult.ErrorMessage = ex.Message;
+                testResult.ErrorStackTrace = ex.StackTrace;
+            }
+            finally
+            {
+                testResult.EndTime = DateTimeOffset.Now;
+                testResult.Duration = testResult.EndTime - testResult.StartTime;
+            }
+
+            frameworkHandle.RecordResult(testResult);
+        }
+
         // Accessed from tests
         internal void RunTests(
             IReadOnlyList<Test> tests,
             IRunContext runContext,
             IFrameworkHandle frameworkHandle)
         {
-            foreach (var test in tests)
+            var concurrentTests = tests.Where(t => t.IsParallel).ToArray();
+            var nonConcurrentTests = tests.Where(t => !t.IsParallel).ToArray();
+
+            concurrentTests.AsParallel().WithCancellation(_cts.Token).ForAll(test =>
             {
                 _cts.Token.ThrowIfCancellationRequested();
+                RunTest(test, runContext, frameworkHandle);
+            });
 
-                frameworkHandle.SendMessage(
-                    TestMessageLevel.Informational,
-                    $"Running test '{test.Title}' ({test.Id}) from assembly '{test.Assembly.FullName}'."
-                );
-
-                var testResult = CreateTestResult(test, test.Assembly.Location);
-                testResult.StartTime = DateTimeOffset.Now;
-
-                try
-                {
-                    if (!test.IsSkipped)
-                    {
-                        test.ExecuteAsync().GetAwaiter().GetResult();
-
-                        testResult.Outcome = TestOutcome.Passed;
-                    }
-                    else
-                    {
-                        testResult.Outcome = TestOutcome.Skipped;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    testResult.Outcome = TestOutcome.Failed;
-                    testResult.ErrorMessage = ex.Message;
-                    testResult.ErrorStackTrace = ex.StackTrace;
-                }
-                finally
-                {
-                    testResult.EndTime = DateTimeOffset.Now;
-                    testResult.Duration = testResult.EndTime - testResult.StartTime;
-                }
-
-                frameworkHandle.RecordResult(testResult);
+            foreach (var test in nonConcurrentTests)
+            {
+                _cts.Token.ThrowIfCancellationRequested();
+                RunTest(test, runContext, frameworkHandle);
             }
         }
 

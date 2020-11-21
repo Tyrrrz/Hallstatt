@@ -46,6 +46,7 @@ namespace Hallstatt
                 title,
                 assembly,
                 metadata.GetTraits(),
+                metadata.GetIsParallel(),
                 metadata.GetIsSkipped(),
                 executeAsync
             ));
@@ -102,6 +103,7 @@ namespace Hallstatt
                     title,
                     assembly,
                     metadata.GetTraits(),
+                    metadata.GetIsParallel(),
                     metadata.GetIsSkipped(),
                     () => executeAsync(parameter)
                 ));

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
@@ -7,7 +8,7 @@ namespace Hallstatt.TestAdapter.Tests.Fakes
 {
     public class FakeFrameworkHandle : FakeMessageLogger, IFrameworkHandle
     {
-        private readonly List<TestResult> _testResults = new List<TestResult>();
+        private readonly ConcurrentBag<TestResult> _testResults = new ConcurrentBag<TestResult>();
 
         public bool EnableShutdownAfterTestRun { get; set; }
 

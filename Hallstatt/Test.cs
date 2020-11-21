@@ -34,6 +34,11 @@ namespace Hallstatt
         public IReadOnlyDictionary<string, string?> Traits { get; }
 
         /// <summary>
+        /// Whether the test can be ran concurrently with others.
+        /// </summary>
+        public bool IsParallel { get; }
+
+        /// <summary>
         /// Whether the test is skipped.
         /// </summary>
         public bool IsSkipped { get; }
@@ -46,6 +51,7 @@ namespace Hallstatt
             string title,
             Assembly assembly,
             IReadOnlyDictionary<string, string?> traits,
+            bool isParallel,
             bool isSkipped,
             Func<ValueTask> executeAsync)
         {
@@ -53,6 +59,7 @@ namespace Hallstatt
             Title = title;
             Assembly = assembly;
             Traits = traits;
+            IsParallel = isParallel;
             IsSkipped = isSkipped;
             _executeAsync = executeAsync;
         }

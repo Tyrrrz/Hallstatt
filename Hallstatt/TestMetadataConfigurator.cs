@@ -9,6 +9,7 @@ namespace Hallstatt
     public class TestMetadataConfigurator
     {
         private readonly Dictionary<string, string?> _traits = new Dictionary<string, string?>(StringComparer.Ordinal);
+        private bool _isParallel = true;
         private bool _isSkipped;
 
         /// <summary>
@@ -21,15 +22,26 @@ namespace Hallstatt
         }
 
         /// <summary>
-        /// Instructs the test to be skipped (conditionally).
+        /// Instructs whether the test can be parallelized.
         /// </summary>
-        public TestMetadataConfigurator Skip(bool condition = true)
+        public TestMetadataConfigurator Parallel(bool isParallel = true)
         {
-            _isSkipped = condition;
+            _isParallel = isParallel;
+            return this;
+        }
+
+        /// <summary>
+        /// Instructs whether the test can be skipped.
+        /// </summary>
+        public TestMetadataConfigurator Skip(bool isSkipped = true)
+        {
+            _isSkipped = isSkipped;
             return this;
         }
 
         internal IReadOnlyDictionary<string, string?> GetTraits() => _traits;
+
+        internal bool GetIsParallel() => _isParallel;
 
         internal bool GetIsSkipped() => _isSkipped;
     }

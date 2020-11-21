@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using FluentAssertions;
 using Hallstatt.Assertions;
 using Hallstatt.TestAdapter.Tests.Fakes;
@@ -18,13 +19,11 @@ namespace Hallstatt.TestAdapter.Tests
             // Arrange
             TestController.Test(
                 "Test 1",
-                o => o.Trait("foo", "bar"),
                 () => { }
             );
 
             TestController.Test(
                 "Test 2",
-                o => o.Trait("foo", "baz"),
                 () => { }
             );
 
@@ -41,14 +40,8 @@ namespace Hallstatt.TestAdapter.Tests
 
             // Assert
             testResults.Should().HaveCount(2);
-
-            testResults[0].DisplayName.Should().Be("Test 1");
-            testResults[0].Traits.Should().BeEquivalentTo(new Trait("foo", "bar"));
-            testResults[0].Outcome.Should().Be(TestOutcome.Passed);
-
-            testResults[1].DisplayName.Should().Be("Test 2");
-            testResults[1].Traits.Should().BeEquivalentTo(new Trait("foo", "baz"));
-            testResults[1].Outcome.Should().Be(TestOutcome.Passed);
+            testResults.Select(r => r.DisplayName).Should().BeEquivalentTo("Test 1", "Test 2");
+            testResults.Select(r => r.Outcome).Should().AllBeEquivalentTo(TestOutcome.Passed);
         }
 
         [Fact]
@@ -57,13 +50,11 @@ namespace Hallstatt.TestAdapter.Tests
             // Arrange
             TestController.Test(
                 "Test 1",
-                o => o.Trait("foo", "bar"),
                 () => throw new InvalidOperationException()
             );
 
             TestController.Test(
                 "Test 2",
-                o => o.Trait("foo", "baz"),
                 () => throw new AssertionException()
             );
 
@@ -80,14 +71,8 @@ namespace Hallstatt.TestAdapter.Tests
 
             // Assert
             testResults.Should().HaveCount(2);
-
-            testResults[0].DisplayName.Should().Be("Test 1");
-            testResults[0].Traits.Should().BeEquivalentTo(new Trait("foo", "bar"));
-            testResults[0].Outcome.Should().Be(TestOutcome.Failed);
-
-            testResults[1].DisplayName.Should().Be("Test 2");
-            testResults[1].Traits.Should().BeEquivalentTo(new Trait("foo", "baz"));
-            testResults[1].Outcome.Should().Be(TestOutcome.Failed);
+            testResults.Select(r => r.DisplayName).Should().BeEquivalentTo("Test 1", "Test 2");
+            testResults.Select(r => r.Outcome).Should().AllBeEquivalentTo(TestOutcome.Failed);
         }
 
         [Fact]
@@ -96,13 +81,13 @@ namespace Hallstatt.TestAdapter.Tests
             // Arrange
             TestController.Test(
                 "Test 1",
-                o => o.Skip().Trait("foo", "bar"),
+                o => o.Skip(),
                 () => { }
             );
 
             TestController.Test(
                 "Test 2",
-                o => o.Skip().Trait("foo", "baz"),
+                o => o.Skip(),
                 () => { }
             );
 
@@ -119,29 +104,21 @@ namespace Hallstatt.TestAdapter.Tests
 
             // Assert
             testResults.Should().HaveCount(2);
-
-            testResults[0].DisplayName.Should().Be("Test 1");
-            testResults[0].Traits.Should().BeEquivalentTo(new Trait("foo", "bar"));
-            testResults[0].Outcome.Should().Be(TestOutcome.Skipped);
-
-            testResults[1].DisplayName.Should().Be("Test 2");
-            testResults[1].Traits.Should().BeEquivalentTo(new Trait("foo", "baz"));
-            testResults[1].Outcome.Should().Be(TestOutcome.Skipped);
+            testResults.Select(r => r.DisplayName).Should().BeEquivalentTo("Test 1", "Test 2");
+            testResults.Select(r => r.Outcome).Should().AllBeEquivalentTo(TestOutcome.Skipped);
         }
 
         [Fact]
-        public void Mixed_tests_are_reported_correctly()
+        public void Mixed_result_tests_are_reported_correctly()
         {
             // Arrange
             TestController.Test(
                 "Test 1",
-                o => o.Trait("foo", "bar"),
                 () => throw new AssertionException()
             );
 
             TestController.Test(
                 "Test 2",
-                o => o.Trait("foo", "baz"),
                 () => { }
             );
 
@@ -158,14 +135,8 @@ namespace Hallstatt.TestAdapter.Tests
 
             // Assert
             testResults.Should().HaveCount(2);
-
-            testResults[0].DisplayName.Should().Be("Test 1");
-            testResults[0].Traits.Should().BeEquivalentTo(new Trait("foo", "bar"));
-            testResults[0].Outcome.Should().Be(TestOutcome.Failed);
-
-            testResults[1].DisplayName.Should().Be("Test 2");
-            testResults[1].Traits.Should().BeEquivalentTo(new Trait("foo", "baz"));
-            testResults[1].Outcome.Should().Be(TestOutcome.Passed);
+            testResults.Select(r => r.DisplayName).Should().BeEquivalentTo("Test 1", "Test 2");
+            testResults.Select(r => r.Outcome).Should().BeEquivalentTo(TestOutcome.Failed, TestOutcome.Passed);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 
@@ -5,7 +6,7 @@ namespace Hallstatt.TestAdapter.Tests.Fakes
 {
     public partial class FakeMessageLogger : IMessageLogger
     {
-        private readonly List<MessageEntry> _messages = new List<MessageEntry>();
+        private readonly ConcurrentBag<MessageEntry> _messages = new ConcurrentBag<MessageEntry>();
 
         public void SendMessage(TestMessageLevel testMessageLevel, string message) =>
             _messages.Add(new MessageEntry(testMessageLevel, message));
