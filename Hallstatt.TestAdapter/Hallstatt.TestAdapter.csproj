@@ -1,8 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
+    <Authors>$(Company)</Authors>
+    <Description>Test adapter for Hallstatt</Description>
+    <PackageTags>test framework functional testing</PackageTags>
+    <PackageProjectUrl>https://github.com/Tyrrrz/Hallstatt</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/Tyrrrz/Hallstatt/blob/master/Changelog.md</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <PublishRepositoryUrl>True</PublishRepositoryUrl>
+    <EmbedUntrackedSources>True</EmbedUntrackedSources>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <DevelopmentDependency>true</DevelopmentDependency>
+  </PropertyGroup>
+
+  <!-- Disable nullability warnings on older frameworks because there is no nullability info for BCL -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <Nullable>annotations</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,7 +27,7 @@
       <_Parameter1>Hallstatt.TestAdapter.Tests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="16.8.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
