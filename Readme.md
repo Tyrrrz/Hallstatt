@@ -10,9 +10,12 @@
 
 Hallstatt is a simple and straightforward testing framework for C#. Instead of relying on the traditional approach for defining tests through class methods and attributes, Hallstatt tests are defined directly in code using lambdas, avoiding many associated limitations in the process. It's largely inspired by JavaScript testing frameworks and F#'s [Expecto](https://github.com/haf/expecto).
 
+**Note: this is an experimental project and is not recommended for production use.**
+
 ## Download
 
-- [NuGet](https://nuget.org/packages/Hallstatt): `dotnet add package Hallstatt`
+- [NuGet (Hallstatt)](https://nuget.org/packages/Hallstatt): `dotnet add package Hallstatt`
+- [NuGet (Hallstatt.TestAdapter)](https://nuget.org/packages/Hallstatt.TestAdapter): `dotnet add package Hallstatt.TestAdapter`
 
 ## Features
 
