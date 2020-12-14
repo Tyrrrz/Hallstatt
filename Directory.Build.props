@@ -9,6 +9,16 @@
     <WarningsAsErrors>nullable</WarningsAsErrors>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Authors>$(Company)</Authors>
+    <Description>Low-ceremony test framework</Description>
+    <PackageTags>test framework functional testing</PackageTags>
+    <PackageProjectUrl>https://github.com/Tyrrrz/Hallstatt</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/Tyrrrz/Hallstatt/blob/master/Changelog.md</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
   <!-- Disable nullability warnings on older frameworks because there is no nullability info for BCL -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <Nullable>annotations</Nullable>

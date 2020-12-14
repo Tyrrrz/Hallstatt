@@ -9,9 +9,6 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 
 namespace Hallstatt.TestAdapter
 {
-    /// <summary>
-    /// Hallstatt adapter for `dotnet test` and IDE integration.
-    /// </summary>
     [FileExtension(".dll")]
     [FileExtension(".exe")]
     [DefaultExecutorUri(UriRaw)]
@@ -23,7 +20,6 @@ namespace Hallstatt.TestAdapter
 
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
-        /// <inheritdoc />
         public void DiscoverTests(
             IEnumerable<string> sources,
             IDiscoveryContext discoveryContext,
@@ -105,7 +101,6 @@ namespace Hallstatt.TestAdapter
             }
         }
 
-        /// <inheritdoc />
         public void RunTests(
             IEnumerable<string> sources,
             IRunContext runContext,
@@ -120,7 +115,6 @@ namespace Hallstatt.TestAdapter
             }
         }
 
-        /// <inheritdoc />
         public void RunTests(
             IEnumerable<TestCase> testCases,
             IRunContext runContext,
@@ -138,10 +132,8 @@ namespace Hallstatt.TestAdapter
             }
         }
 
-        /// <inheritdoc />
         public void Cancel() => _cts.Cancel();
 
-        /// <inheritdoc />
         public void Dispose() => _cts.Dispose();
     }
 
@@ -161,7 +153,7 @@ namespace Hallstatt.TestAdapter
 
             // Entry point has an optional parameter that corresponds to command line arguments
             var parameters = entryPoint.GetParameters().Any()
-                ? new object[] {Array.Empty<string>()}
+                ? new object[] { Array.Empty<string>() }
                 : Array.Empty<object>();
 
             entryPoint.Invoke(null, parameters);
