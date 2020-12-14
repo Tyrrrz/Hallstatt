@@ -16,9 +16,9 @@ namespace Hallstatt.TestAdapter
     public partial class TestExecutor : ITestDiscoverer, ITestExecutor, IDisposable
     {
         private const string UriRaw = "executor://tyrrrz/hallstatt/v1";
-        private static readonly Uri Uri = new Uri(UriRaw);
+        private static readonly Uri Uri = new(UriRaw);
 
-        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+        private readonly CancellationTokenSource _cts = new();
 
         public void DiscoverTests(
             IEnumerable<string> sources,

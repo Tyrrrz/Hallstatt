@@ -8,7 +8,7 @@ namespace Hallstatt.TestAdapter.Tests.Fakes
 {
     public class FakeFrameworkHandle : FakeMessageLogger, IFrameworkHandle
     {
-        private readonly ConcurrentBag<TestResult> _testResults = new ConcurrentBag<TestResult>();
+        private readonly ConcurrentBag<TestResult> _testResults = new();
 
         public bool EnableShutdownAfterTestRun { get; set; }
 

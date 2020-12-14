@@ -8,7 +8,7 @@ namespace Hallstatt
     /// </summary>
     public class TestMetadataConfigurator
     {
-        private readonly Dictionary<string, string?> _traits = new Dictionary<string, string?>(StringComparer.Ordinal);
+        private readonly Dictionary<string, string?> _traits = new(StringComparer.Ordinal);
         private bool _isParallel = true;
         private bool _isSkipped;
 

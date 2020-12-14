@@ -7,7 +7,7 @@ namespace Hallstatt.TestAdapter.Tests.Fakes
 {
     public class FakeTestCaseDiscoverySink : ITestCaseDiscoverySink
     {
-        private readonly ConcurrentBag<TestCase> _testCases = new ConcurrentBag<TestCase>();
+        private readonly ConcurrentBag<TestCase> _testCases = new();
 
         public void SendTestCase(TestCase discoveredTest) =>
             _testCases.Add(discoveredTest);

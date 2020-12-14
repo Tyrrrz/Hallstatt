@@ -4,29 +4,18 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 
 namespace Hallstatt.TestAdapter.Tests.Fakes
 {
-    public partial class FakeMessageLogger : IMessageLogger
+    public record FakeMessageEntry(
+        TestMessageLevel Level,
+        string Message
+    );
+
+    public class FakeMessageLogger : IMessageLogger
     {
-        private readonly ConcurrentBag<MessageEntry> _messages = new ConcurrentBag<MessageEntry>();
+        private readonly ConcurrentBag<FakeMessageEntry> _messages = new();
 
         public void SendMessage(TestMessageLevel testMessageLevel, string message) =>
-            _messages.Add(new MessageEntry(testMessageLevel, message));
+            _messages.Add(new FakeMessageEntry(testMessageLevel, message));
 
-        public IReadOnlyList<MessageEntry> GetMessages() => _messages.ToArray();
-    }
-
-    public partial class FakeMessageLogger
-    {
-        public class MessageEntry
-        {
-            public TestMessageLevel Level { get; }
-
-            public string Message { get; }
-
-            public MessageEntry(TestMessageLevel level, string message)
-            {
-                Level = level;
-                Message = message;
-            }
-        }
+        public IReadOnlyList<FakeMessageEntry> GetMessages() => _messages.ToArray();
     }
 }

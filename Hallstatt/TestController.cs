@@ -12,7 +12,7 @@ namespace Hallstatt
     /// </summary>
     public static class TestController
     {
-        private static readonly List<Test> Tests = new List<Test>();
+        private static readonly List<Test> Tests = new();
 
         /// <summary>
         /// Get registered tests.

@@ -7,10 +7,10 @@ namespace System.Linq
 {
     using Collections.Generic;
 
-    internal static class Extensions
+    internal static class PolyfillExtensions
     {
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer) =>
-            new HashSet<T>(source, comparer);
+            new(source, comparer);
 
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source) =>
             source.ToHashSet(EqualityComparer<T>.Default);
