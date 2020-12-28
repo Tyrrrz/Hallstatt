@@ -6,7 +6,7 @@
 [![Downloads](https://img.shields.io/nuget/dt/Hallstatt.svg)](https://nuget.org/packages/Hallstatt)
 [![Donate](https://img.shields.io/badge/donate-$$$-purple.svg)](https://tyrrrz.me/donate)
 
-**Project status: active**.
+⚠️ **Project status: suspended**. Waiting on a [C# language proposal](https://github.com/dotnet/csharplang/issues/4163).
 
 Hallstatt is a simple and straightforward testing framework for C#. Instead of relying on the traditional approach for defining tests through class methods and attributes, Hallstatt tests are defined directly in code using lambdas, avoiding many associated limitations in the process. It's largely inspired by JavaScript testing frameworks and F#'s [Expecto](https://github.com/haf/expecto).
 
