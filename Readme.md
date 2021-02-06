@@ -156,7 +156,7 @@ TestMany(
 );
 ```
 
-Note that, under the hood, `TestMany(...)` is just a helpful utility that takes a list of test cases and registers a corresponding test for each of them.
+Under the hood, `TestMany(...)` is just a helpful utility that takes a list of test cases and registers a corresponding test for each of them.
 Essentially, the above code is functionally equivalent to the following (slightly less eloquent) snippet:
 
 ```csharp
