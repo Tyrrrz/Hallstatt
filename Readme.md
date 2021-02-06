@@ -8,62 +8,55 @@
 
 ⚠️ **Project status: suspended**. Waiting on a [C# language proposal](https://github.com/dotnet/csharplang/issues/4163).
 
-Hallstatt is a simple and straightforward testing framework for C#. Instead of relying on the traditional approach for defining tests through class methods and attributes, Hallstatt tests are defined directly in code using lambdas, avoiding many associated limitations in the process. It's largely inspired by JavaScript testing frameworks and F#'s [Expecto](https://github.com/haf/expecto).
+Hallstatt is a simple and straightforward testing framework for C#.
+Instead of relying on the traditional approach for defining tests through class methods and attributes, Hallstatt tests are defined using top-level statements and lambdas, resulting in more concise code and avoiding many associated limitations in the process.
 
-**Note: this is an experimental project and is not recommended for production use**.
+This library is inspired by JavaScript testing frameworks and F#'s [Expecto](https://github.com/haf/expecto).
+
+**Note: this is an experimental project and is not yet recommended for production use**.
 
 ## Download
 
 - [NuGet (Hallstatt)](https://nuget.org/packages/Hallstatt): `dotnet add package Hallstatt`
 - [NuGet (Hallstatt.TestAdapter)](https://nuget.org/packages/Hallstatt.TestAdapter): `dotnet add package Hallstatt.TestAdapter`
 
-## Features
-
-- Does not rely on attributes and reflection for defining tests
-- Allows any string literal to be used as a test name
-- Statically-typed test parametrization without boilerplate
-- Succinct and expressive interface
-- Targets .NET Standard 2.0+
-
 ## Usage
 
-### Creating a test project
+### Getting started
 
-To use Hallstatt follow the next steps:
+To use Hallstatt, take the following steps:
 
-1. Create a new or open existing an .NET project and change the `.csproj` file so that it looks similar to this: 
+1. Install `Hallstatt`
+2. Install `Hallstatt.TestAdapter`
+3. Install `Microsoft.NET.Test.Sdk` (or update to latest version if it's already installed)
+4. Add `<GenerateProgramFile>false</GenerateProgramFile>` to your test project file:
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <IsTestProject>true</IsTestProject>
-    <IsPackable>false</IsPackable>
+    
+    <!-- ... -->
+    
+    <!-- Add the following line: -->
     <GenerateProgramFile>false</GenerateProgramFile>
+    
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
-  </ItemGroup>
+  <!-- ... -->
 
 </Project>
 ```
 
-2. Install latest version of `Hallstatt` from NuGet: `dotnet add package Hallstatt`
-
-3. Install latest version of `Hallstatt.TestAdapter` from NuGet: `dotnet add package Hallstatt.TestAdapter`
-
-4. Define your tests in code
-
-Note, if you're migrating from another test framework, make sure to remove all of its associated packages to avoid conflicts.
+4. Start writing tests!
 
 ### Basic example
 
-Once the project is set up, you can write a test like so:
+In order to define a test, simply add a top-level call to `TestController.Test(...)` specifying the name of the test and the lambda expression used to evaluate it:
 
 ```csharp
 using Hallstatt;
+using Hallstatt.Assertions;
 using static Hallstatt.TestController;
 
 Test("Sum of 2 and 2 equals 4", () =>
@@ -73,38 +66,7 @@ Test("Sum of 2 and 2 equals 4", () =>
 });
 ```
 
-By doing the above, we've defined a test called `Sum of 2 and 2 equals 4`, which executes a simple mathematical operation and validates the result. Note that calling `Test(...)` does not actually run the test, but just registers it for the test adapter.
-
-The snippet above also uses the [top-level statements](https://docs.microsoft.com/en-us/dotnet/csharp/tutorials/exploration/top-level-statements) feature introduced in C# 9. Functionally, it's identical to this:
-
-```csharp
-using Hallstatt;
-using static Hallstatt.TestController;
-
-public static class MyTests
-{
-    public static void Main()
-    {
-        Test("Sum of 2 and 2 equals 4", () =>
-        {
-            var result = 2 + 2;
-            Assert.That(result == 4);
-        });
-    }
-}
-```
-
-Now, if we run `dotnet test --list-tests` on our test project, we should see it print the name of the test that we have defined:
-
-```txt
-Microsoft (R) Test Execution Command Line Tool Version 16.8.0
-Copyright (c) Microsoft Corporation.  All rights reserved.
-
-The following Tests are available:
-    Sum of 2 and 2 equals 4
-```
-
-We can also run `dotnet test` to execute it:
+To execute the test, run `dotnet test`:
 
 ```txt
 Microsoft (R) Test Execution Command Line Tool Version 16.8.0
@@ -116,12 +78,24 @@ A total of 1 test files matched the specified pattern.
 Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 58 ms
 ```
 
+To get a list of tests defined in a project, run `dotnet test --list-tests`:
+
+```txt
+Microsoft (R) Test Execution Command Line Tool Version 16.8.0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+The following Tests are available:
+    Sum of 2 and 2 equals 4
+```
+
 ### Assertions
 
-Hallstatt comes with a basic assertion module represented by the `Assert` class:
+Hallstatt comes with a rudimentary assertion module represented by the `Assert` class, which can be used to verify simple claims:
 
 ```csharp
+using Hallstatt;
 using Hallstatt.Assertions;
+using static Hallstatt.TestController;
 
 Test("My test", () =>
 {
@@ -131,16 +105,67 @@ Test("My test", () =>
 });
 ```
 
-These assertion utilities should be enough to get you started, but they are intentionally very simple and unambitious. It is **strongly recommended to use an external feature-complete library** like [FluentAssertions](https://github.com/fluentassertions/fluentassertions) or [Shouldly](https://github.com/shouldly/shouldly) to perform assertions in your Hallstatt tests.
+These utilities should be enough to get started, but they are intentionally limited and unambitious.
+It is **strongly recommended to use an external feature-complete assertion library** like [FluentAssertions](https://github.com/fluentassertions/fluentassertions) or [Shouldly](https://github.com/shouldly/shouldly) in your Hallstatt tests.
+
+Plugging an external assertion library does not require any configuration:
+
+```csharp
+using Hallstatt;
+using FluentAssertions;
+using static Hallstatt.TestController;
+
+Test("Sum of 2 and 2 equals 4", () =>
+{
+    var result = 2 + 2;
+    result.Should().Be(4);
+});
+```
 
 ### Parametrized tests
 
-The concept of "parametrized tests" dwindles when we don't have to concern ourselves with the inherent limitations of methods for defining tests. After all, we can simply do this:
+One of the main benefits of defining tests dynamically is the ability to compose them easily, as you would with normal functions.
+As an example, here's how you define a so-called parametrized test in Hallstatt:
 
 ```csharp
+using Hallstatt;
+using Hallstatt.Assertions;
+using static Hallstatt.TestController;
+
+TestMany(
+    // Test parameters
+    new[]
+    {
+        // Anonymous objects allow us to author test cases quickly,
+        // while stil maintaining complete type safety!
+        
+        new {Left = 1, Right = 3, Result = 4},
+        new {Left = 5, Right = 2, Result = 7},
+        new {Left = 1, Right = -2, Result = -1}
+    },
+
+    // Test title
+    p => $"Sum of {p.Left} and {p.Right} equals {p.Result}",
+
+    // Test body
+    p =>
+    {
+        var result = p.Left + p.Right;
+        Assert.That(result == p.Result);
+    }
+);
+```
+
+Note that, under the hood, `TestMany(...)` is just a helpful utility that takes a list of test cases and registers a corresponding test for each of them.
+Essentially, the above code is functionally equivalent to the following (slightly less eloquent) snippet:
+
+```csharp
+using Hallstatt;
+using Hallstatt.Assertions;
+using static Hallstatt.TestController;
+
 var parameters = new[]
 {
-    // Anonymous objects
     new {Left = 1, Right = 3, Result = 4},
     new {Left = 5, Right = 2, Result = 7},
     new {Left = 1, Right = -2, Result = -1}
@@ -156,31 +181,7 @@ foreach (var parameter in parameters)
 }
 ```
 
-The above approach is perfectly valid, but Hallstatt also provides an utility that allows you to do the same thing more directly:
-
-```csharp
-TestMany(
-    // Test parameters
-    new[]
-    {
-        new {Left = 1, Right = 3, Result = 4},
-        new {Left = 5, Right = 2, Result = 7},
-        new {Left = 1, Right = -2, Result = -1}
-    },
-
-    // Test title
-    p => $"Sum of {p.Left} and {p.Right} equals {p.Result}",
-
-    // Test body
-    p =>
-    {
-        var result = p.Left + p.Right;
-        Assert.That(result).IsEqualTo(p.Result);
-    }
-);
-```
-
-Essentially, we've registered 3 tests that validate the same code against different inputs. Running test discovery should show us the following:
+Using `TestMany(...)` as shown earlier will result in the following tests being registered:
 
 ```txt
 Microsoft (R) Test Execution Command Line Tool Version 16.8.0
@@ -192,45 +193,25 @@ The following Tests are available:
     Sum of 1 and -2 equals -1
 ```
 
-### Skipping tests
+### Test configuration
 
-Tests can be skipped:
-
-```csharp
-Test("Skipped test", o => o.Skip(), () =>
-{
-    // Not going to be executed
-    Assert.That(false);
-});
-
-Test("Conditionally skipped test",
-
-    // Skip when not running on Windows
-    o => o.Skip(!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)),
-
-    () =>
-    {
-        var registry = Registry.CurrentUser.OpenSubKey("foo");
-        Assert.That(registry.GetValue() != null);
-    }
-);
-```
-
-### Assigning traits
-
-Just like in other frameworks, tests in Hallstatt can have arbitrary traits (key-value pairs) assigned to them:
+Both `Test(...)` and `TestMany(...)` have an overload that take an additional lambda expression that can be used to configure various properties.
+For example, you can assign traits to tests, which can be useful for filtered runs or other integrations:
 
 ```csharp
 Test("Sum of 2 and 2 equals 4",
     o =>
     {
+        // Key & value
         o.Trait("Category", "MySpecialTests");
+        
+        // Key & no value
         o.Trait("Foo");
     }
     () =>
     {
         var result = 2 + 2;
-        Assert.That(result).IsEqualTo(4);
+        Assert.That(result == 4);
     }
 );
 
@@ -251,102 +232,29 @@ TestMany(
     p =>
     {
         var result = p.Left + p.Right;
-        Assert.That(result).IsEqualTo(p.Result);
+        Assert.That(result == p.Result);
     }
 );
 ```
 
-Traits can be used, among other things, for [filtered test runs](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test#filter-option-details):
-
-```txt
-dotnet test --filter Category=MySpecialTests
-```
-
-### Comparison with the traditional approach
-
-To understand the advantages of using Hallstatt, let's consider how the same test can be implemented using different frameworks. For example, here is a simple parametrized test written in xUnit:
+Besides that, you can also mark tests as skipped to (temporarily) exclude them from the suite:
 
 ```csharp
-public static TheoryData<string?, GeoLocation?> GeoLocationParseTestCases =>
-    new TheoryData<string?, GeoLocation?>
-    {
-        // Valid
-
-        {"41.25 -120.9762", new GeoLocation(41.25, -120.9762)},
-        {"41.25, -120.9762", new GeoLocation(41.25, -120.9762)},
-        {"41.25,-120.9762", new GeoLocation(41.25, -120.9762)},
-        {"-41.25, -120.9762", new GeoLocation(-41.25, -120.9762)},
-        {"41.25, 120.9762", new GeoLocation(41.25, 120.9762)},
-        {"41.25°N, 120.9762°W", new GeoLocation(41.25, -120.9762)},
-        {"41.25N 120.9762W", new GeoLocation(41.25, -120.9762)},
-        {"41.25N, 120.9762W", new GeoLocation(41.25, -120.9762)},
-        {"41.25 N, 120.9762 W", new GeoLocation(41.25, -120.9762)},
-        {"41.25 S, 120.9762 W", new GeoLocation(-41.25, -120.9762)},
-        {"41.25 S, 120.9762 E", new GeoLocation(-41.25, 120.9762)},
-        {"41, 120", new GeoLocation(41, 120)},
-        {"-41, -120", new GeoLocation(-41, -120)},
-        {"41 N, 120 E", new GeoLocation(41, 120)},
-        {"41 N, 120 W", new GeoLocation(41, -120)},
-
-        // Invalid
-
-        {"41.25; -120.9762", null},
-        {"-41.25 S, 120.9762 E", null},
-        {"41.25", null},
-        {"", null},
-        {null, null}
-    };
-
-[Theory]
-[MemberData(nameof(GeoLocationParseTestCases))]
-public void I_can_type_in_my_location_manually_using_standard_notation(
-    string? str, GeoLocation? expectedResult)
+Test("Skipped test", o => o.Skip(), () =>
 {
-    // Act & assert
-    GeoLocation.TryParse(str).Should().Be(expectedResult);
-}
-``` 
+    // Not going to be executed
+    Assert.That(false);
+});
 
-And here is the same test defined in Hallstatt:
+Test("Conditionally skipped test",
 
-```csharp
-TestMany(
-    new[]
+    // Skip when not running on Windows
+    o => o.Skip(!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)),
+
+    () =>
     {
-        // Valid
-        
-        new {Input = "41.25 -120.9762", Output = new GeoLocation(41.25, -120.9762)},
-        new {Input = "41.25, -120.9762", Output = new GeoLocation(41.25, -120.9762)},
-        new {Input = "41.25,-120.9762", Output = new GeoLocation(41.25, -120.9762)},
-        new {Input = "-41.25, -120.9762", Output = new GeoLocation(-41.25, -120.9762)},
-        new {Input = "41.25, 120.9762", Output = new GeoLocation(41.25, 120.9762)},
-        new {Input = "41.25°N, 120.9762°W", Output = new GeoLocation(41.25, -120.9762)},
-        new {Input = "41.25N 120.9762W", Output = new GeoLocation(41.25, -120.9762)},
-        new {Input = "41.25N, 120.9762W", Output = new GeoLocation(41.25, -120.9762)},
-        new {Input = "41.25 N, 120.9762 W", Output = new GeoLocation(41.25, -120.9762)},
-        new {Input = "41.25 S, 120.9762 W", Output = new GeoLocation(-41.25, -120.9762)},
-        new {Input = "41.25 S, 120.9762 E", Output = new GeoLocation(-41.25, 120.9762)},
-        new {Input = "41, 120", Output = new GeoLocation(41, 120)},
-        new {Input = "-41, -120", Output = new GeoLocation(-41, -120)},
-        new {Input = "41 N, 120 E", Output = new GeoLocation(41, 120)},
-        new {Input = "41 N, 120 W", Output = new GeoLocation(41, -120)},
-
-        // Invalid
-
-        new {Input = "41.25; -120.9762", Output = default(GeoLocation?)},
-        new {Input = "-41.25 S, 120.9762 E", Output = default(GeoLocation?)},
-        new {Input = "41.25", Output = default(GeoLocation?)},
-        new {Input = "", Output = default(GeoLocation?)},
-        new {Input = default(string), Output = default(GeoLocation?)}
-    },
-
-    p => $"I can type in my location manually using standard notation ({p})",
-
-    p =>
-    {
-        GeoLocation.TryParse(p.Input).Should().Be(p.Output);
+        var registry = Registry.CurrentUser.OpenSubKey("foo");
+        Assert.That(registry.GetValue() != null);
     }
 );
 ```
-
-As you can see, the second approach has the advantage of being more localized, type-safe (without the need for analyzers), and requires less code. Additionally, by not relying on methods, Hallstatt tests can use normal human-readable strings in test names without having to rely on special transformations.

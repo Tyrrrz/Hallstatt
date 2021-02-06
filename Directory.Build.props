@@ -11,7 +11,7 @@
 
   <PropertyGroup>
     <Authors>$(Company)</Authors>
-    <Description>Low-ceremony test framework</Description>
+    <Description>Low-ceremony testing framework</Description>
     <PackageTags>test framework functional testing</PackageTags>
     <PackageProjectUrl>https://github.com/Tyrrrz/Hallstatt</PackageProjectUrl>
     <PackageReleaseNotes>https://github.com/Tyrrrz/Hallstatt/blob/master/Changelog.md</PackageReleaseNotes>
