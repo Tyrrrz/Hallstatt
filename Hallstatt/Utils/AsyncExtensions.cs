@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Hallstatt.Internal
+namespace Hallstatt.Utils
 {
     internal static class AsyncExtensions
     {
