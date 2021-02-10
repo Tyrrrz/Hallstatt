@@ -17,8 +17,9 @@ This library is inspired by JavaScript testing frameworks and F#'s [Expecto](htt
 
 ## Download
 
-- [NuGet (Hallstatt)](https://nuget.org/packages/Hallstatt): `dotnet add package Hallstatt`
-- [NuGet (Hallstatt.TestAdapter)](https://nuget.org/packages/Hallstatt.TestAdapter): `dotnet add package Hallstatt.TestAdapter`
+📦 [NuGet (Hallstatt)](https://nuget.org/packages/Hallstatt): `dotnet add package Hallstatt`
+
+📦 [NuGet (Hallstatt.TestAdapter)](https://nuget.org/packages/Hallstatt.TestAdapter): `dotnet add package Hallstatt.TestAdapter`
 
 ## Usage
 
@@ -26,24 +27,26 @@ This library is inspired by JavaScript testing frameworks and F#'s [Expecto](htt
 
 To use Hallstatt, take the following steps:
 
-1. Install `Hallstatt`
-2. Install `Hallstatt.TestAdapter`
-3. Install `Microsoft.NET.Test.Sdk` (or update to latest version if it's already installed)
+1. Install `Hallstatt` package in your test project
+2. Install `Hallstatt.TestAdapter` package in your test project
+3. Install `Microsoft.NET.Test.Sdk` package in your test project (or update to latest)
 4. Add `<GenerateProgramFile>false</GenerateProgramFile>` to your test project file:
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    
     <!-- ... -->
-    
     <!-- Add the following line: -->
-    <GenerateProgramFile>false</GenerateProgramFile>
-    
+    <GenerateProgramFile>false</GenerateProgramFile>    
   </PropertyGroup>
 
-  <!-- ... -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="x.x.x" />
+    <PackageReference Include="Hallstatt" Version="x.x.x" />
+    <PackageReference Include="Hallstatt.TestAdapter" Version="x.x.x" />
+    <!-- ... -->
+  </ItemGroup>
 
 </Project>
 ```
