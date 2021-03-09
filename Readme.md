@@ -257,7 +257,7 @@ Test("Conditionally skipped test",
     () =>
     {
         var registry = Registry.CurrentUser.OpenSubKey("foo");
-        Assert.That(registry.GetValue() != null);
+        Assert.That(registry.GetValue() is not null);
     }
 );
 ```
