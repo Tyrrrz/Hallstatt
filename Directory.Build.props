@@ -15,6 +15,7 @@
     <PackageTags>test framework functional testing</PackageTags>
     <PackageProjectUrl>https://github.com/Tyrrrz/Hallstatt</PackageProjectUrl>
     <PackageReleaseNotes>https://github.com/Tyrrrz/Hallstatt/blob/master/Changelog.md</PackageReleaseNotes>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
@@ -27,5 +28,9 @@
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../Readme.md" Pack="true" PackagePath="" Visible="false" />
+  </ItemGroup>
 
 </Project>
