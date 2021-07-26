@@ -4,6 +4,7 @@
 [![Coverage](https://codecov.io/gh/Tyrrrz/Hallstatt/branch/master/graph/badge.svg)](https://codecov.io/gh/Tyrrrz/Hallstatt)
 [![Version](https://img.shields.io/nuget/v/Hallstatt.svg)](https://nuget.org/packages/Hallstatt)
 [![Downloads](https://img.shields.io/nuget/dt/Hallstatt.svg)](https://nuget.org/packages/Hallstatt)
+[![Discord](https://img.shields.io/discord/869237470565392384?label=discord)](https://discord.gg/2SUWKFnHSm)
 [![Donate](https://img.shields.io/badge/donate-$$$-purple.svg)](https://tyrrrz.me/donate)
 
 ⚠️ **Project status: suspended**. Waiting on a [C# language proposal](https://github.com/dotnet/csharplang/issues/4163).
