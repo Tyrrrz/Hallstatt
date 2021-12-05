@@ -7,10 +7,10 @@
 [![Discord](https://img.shields.io/discord/869237470565392384?label=discord)](https://discord.gg/2SUWKFnHSm)
 [![Donate](https://img.shields.io/badge/donate-$$$-purple.svg)](https://tyrrrz.me/donate)
 
-⚠️ **Project status: suspended**. Waiting on a [C# language proposal](https://github.com/dotnet/csharplang/issues/4163).
+⚠️ **Project status: suspended** (waiting on a [C# language proposal](https://github.com/dotnet/csharplang/issues/4163)). [What does it mean?](https://github.com/Tyrrrz/shared/blob/master/docs/project-status.md)
 
-Hallstatt is a simple and straightforward testing framework for C#.
-Instead of relying on the traditional approach for defining tests through class methods and attributes, Hallstatt tests are defined using top-level statements and lambdas, resulting in more concise code and avoiding many associated limitations in the process.
+**Hallstatt** is a simple and straightforward testing framework for C#.
+Instead of relying on the traditional approach for defining tests through class methods and attributes, **Hallstatt** tests are defined using top-level statements and lambdas, resulting in more concise code and avoiding many associated limitations in the process.
 
 This library is inspired by JavaScript testing frameworks and F#'s [Expecto](https://github.com/haf/expecto).
 
@@ -26,7 +26,7 @@ This library is inspired by JavaScript testing frameworks and F#'s [Expecto](htt
 
 ### Getting started
 
-To use Hallstatt, take the following steps:
+To use **Hallstatt**, take the following steps:
 
 1. Install `Hallstatt` package in your test project
 2. Install `Hallstatt.TestAdapter` package in your test project
@@ -94,7 +94,7 @@ The following Tests are available:
 
 ### Assertions
 
-Hallstatt comes with a rudimentary assertion module represented by the `Assert` class, which can be used to verify simple claims:
+**Hallstatt** comes with a rudimentary assertion module represented by the `Assert` class, which can be used to verify simple claims:
 
 ```csharp
 using Hallstatt;
@@ -110,7 +110,7 @@ Test("My test", () =>
 ```
 
 These utilities should be enough to get started, but they are intentionally limited and unambitious.
-It is **strongly recommended to use an external feature-complete assertion library** like [FluentAssertions](https://github.com/fluentassertions/fluentassertions) or [Shouldly](https://github.com/shouldly/shouldly) in your Hallstatt tests.
+It is **strongly recommended to use an external feature-complete assertion library** like [FluentAssertions](https://github.com/fluentassertions/fluentassertions) or [Shouldly](https://github.com/shouldly/shouldly) in your **Hallstatt** tests.
 
 Plugging an external assertion library does not require any configuration:
 
@@ -129,7 +129,7 @@ Test("Sum of 2 and 2 equals 4", () =>
 ### Parametrized tests
 
 One of the main benefits of defining tests dynamically is the ability to compose them easily, as you would with normal functions.
-As an example, here's how you define a so-called parametrized test in Hallstatt:
+As an example, here's how you define a so-called parametrized test in **Hallstatt**:
 
 ```csharp
 using Hallstatt;
