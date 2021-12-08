@@ -1,77 +1,76 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Hallstatt.Assertions
+namespace Hallstatt.Assertions;
+
+/// <summary>
+/// Assertion utilities.
+/// </summary>
+/// <remarks>
+/// This assertion module is intentionally very basic.
+/// It's recommended to use a more advanced assertion library, such as FluentAssertions or Shouldly.
+/// </remarks>
+public static class Assert
 {
     /// <summary>
-    /// Assertion utilities.
+    /// Throws an assertion exception.
     /// </summary>
-    /// <remarks>
-    /// This assertion module is intentionally very basic.
-    /// It's recommended to use a more advanced assertion library, such as FluentAssertions or Shouldly.
-    /// </remarks>
-    public static class Assert
+    public static void Fail(string message) => throw new AssertionException(message);
+
+    /// <summary>
+    /// Asserts that the specified condition is <code>true</code>.
+    /// </summary>
+    public static void That(bool condition, string message = "Assertion failed.")
     {
-        /// <summary>
-        /// Throws an assertion exception.
-        /// </summary>
-        public static void Fail(string message) => throw new AssertionException(message);
+        if (!condition)
+            Fail(message);
+    }
 
-        /// <summary>
-        /// Asserts that the specified condition is <code>true</code>.
-        /// </summary>
-        public static void That(bool condition, string message = "Assertion failed.")
+    /// <summary>
+    /// Asserts that the delegate throws the specified exception.
+    /// </summary>
+    public static TException Throws<TException>(
+        Action action,
+        bool includeDerived = false)
+        where TException : Exception
+    {
+        try
         {
-            if (!condition)
-                Fail(message);
+            action();
+        }
+        catch (TException ex) when (includeDerived || ex.GetType() == typeof(TException))
+        {
+            return ex;
+        }
+        catch (Exception ex)
+        {
+            throw new AssertionException($"Expected '{typeof(TException)}' but '{ex.GetType()}' was thrown.");
         }
 
-        /// <summary>
-        /// Asserts that the delegate throws the specified exception.
-        /// </summary>
-        public static TException Throws<TException>(
-            Action action,
-            bool includeDerived = false)
-            where TException : Exception
-        {
-            try
-            {
-                action();
-            }
-            catch (TException ex) when (includeDerived || ex.GetType() == typeof(TException))
-            {
-                return ex;
-            }
-            catch (Exception ex)
-            {
-                throw new AssertionException($"Expected '{typeof(TException)}' but '{ex.GetType()}' was thrown.");
-            }
+        throw new AssertionException($"Expected '{typeof(TException)}' but no exception was thrown.");
+    }
 
-            throw new AssertionException($"Expected '{typeof(TException)}' but no exception was thrown.");
+    /// <summary>
+    /// Asserts that the delegate throws the specified exception.
+    /// </summary>
+    public static async Task<TException> ThrowsAsync<TException>(
+        Func<Task> action,
+        bool includeDerived = false)
+        where TException : Exception
+    {
+        try
+        {
+            await action();
+        }
+        catch (TException ex) when (includeDerived || ex.GetType() == typeof(TException))
+        {
+            return ex;
+        }
+        catch (Exception ex)
+        {
+            throw new AssertionException($"Expected '{typeof(TException)}' but '{ex.GetType()}' was thrown.");
         }
 
-        /// <summary>
-        /// Asserts that the delegate throws the specified exception.
-        /// </summary>
-        public static async Task<TException> ThrowsAsync<TException>(
-            Func<Task> action,
-            bool includeDerived = false)
-            where TException : Exception
-        {
-            try
-            {
-                await action();
-            }
-            catch (TException ex) when (includeDerived || ex.GetType() == typeof(TException))
-            {
-                return ex;
-            }
-            catch (Exception ex)
-            {
-                throw new AssertionException($"Expected '{typeof(TException)}' but '{ex.GetType()}' was thrown.");
-            }
-
-            throw new AssertionException($"Expected '{typeof(TException)}' but no exception was thrown.");
-        }
+        throw new AssertionException($"Expected '{typeof(TException)}' but no exception was thrown.");
     }
 }

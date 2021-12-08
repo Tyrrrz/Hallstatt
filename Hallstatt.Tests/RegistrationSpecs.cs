@@ -3,300 +3,299 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 
-namespace Hallstatt.Tests
+namespace Hallstatt.Tests;
+
+public class RegistrationSpecs
 {
-    public class RegistrationSpecs
+    public RegistrationSpecs() => TestController.Clear();
+
+    [Fact]
+    public void I_can_register_a_single_test()
     {
-        public RegistrationSpecs() => TestController.Clear();
+        // Act
+        TestController.Test(
+            "My test",
+            () => { }
+        );
 
-        [Fact]
-        public void I_can_register_a_single_test()
+        var registeredTests = TestController.GetRegisteredTests();
+
+        // Assert
+        registeredTests.Should().ContainSingle();
+        registeredTests[0].Title.Should().Be("My test");
+        registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+        registeredTests[0].Traits.Should().BeEmpty();
+        registeredTests[0].IsSkipped.Should().BeFalse();
+    }
+
+    [Fact]
+    public void I_can_register_a_single_test_with_traits()
+    {
+        // Act
+        TestController.Test(
+            "My test",
+            o => o.Trait("foo", "bar").Trait("baz"),
+            () => { }
+        );
+
+        var registeredTests = TestController.GetRegisteredTests();
+
+        // Assert
+        registeredTests.Should().ContainSingle();
+        registeredTests[0].Title.Should().Be("My test");
+        registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+        registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string?>
         {
-            // Act
-            TestController.Test(
-                "My test",
-                () => { }
-            );
+            ["foo"] = "bar",
+            ["baz"] = null
+        });
+        registeredTests[0].IsSkipped.Should().BeFalse();
+    }
 
-            var registeredTests = TestController.GetRegisteredTests();
+    [Fact]
+    public void I_can_register_a_single_async_test_with_traits()
+    {
+        // Act
+        TestController.Test(
+            "My test",
+            o => o.Trait("foo", "bar").Trait("baz"),
+            async () => await Task.Yield()
+        );
 
-            // Assert
-            registeredTests.Should().ContainSingle();
-            registeredTests[0].Title.Should().Be("My test");
-            registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
-            registeredTests[0].Traits.Should().BeEmpty();
-            registeredTests[0].IsSkipped.Should().BeFalse();
-        }
+        var registeredTests = TestController.GetRegisteredTests();
 
-        [Fact]
-        public void I_can_register_a_single_test_with_traits()
+        // Assert
+        registeredTests.Should().ContainSingle();
+        registeredTests[0].Title.Should().Be("My test");
+        registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+        registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string?>
         {
-            // Act
-            TestController.Test(
-                "My test",
-                o => o.Trait("foo", "bar").Trait("baz"),
-                () => { }
-            );
+            ["foo"] = "bar",
+            ["baz"] = null
+        });
+        registeredTests[0].IsSkipped.Should().BeFalse();
+    }
 
-            var registeredTests = TestController.GetRegisteredTests();
+    [Fact]
+    public async Task I_can_register_a_single_test_and_it_executes_correctly()
+    {
+        // Arrange
+        var hasExecuted = false;
 
-            // Assert
-            registeredTests.Should().ContainSingle();
-            registeredTests[0].Title.Should().Be("My test");
-            registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
-            registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string?>
+        // Act
+        TestController.Test(
+            "My test",
+            () => hasExecuted = true
+        );
+
+        foreach (var test in TestController.GetRegisteredTests())
+            await test.ExecuteAsync();
+
+        // Assert
+        hasExecuted.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task I_can_register_a_single_async_test_and_it_executes_correctly()
+    {
+        // Arrange
+        var hasExecuted = false;
+
+        // Act
+        TestController.Test(
+            "My test",
+            async () =>
             {
-                ["foo"] = "bar",
-                ["baz"] = null
-            });
-            registeredTests[0].IsSkipped.Should().BeFalse();
-        }
+                await Task.Yield();
+                hasExecuted = true;
+            }
+        );
 
-        [Fact]
-        public void I_can_register_a_single_async_test_with_traits()
-        {
-            // Act
-            TestController.Test(
-                "My test",
-                o => o.Trait("foo", "bar").Trait("baz"),
-                async () => await Task.Yield()
-            );
+        foreach (var test in TestController.GetRegisteredTests())
+            await test.ExecuteAsync();
 
-            var registeredTests = TestController.GetRegisteredTests();
+        // Assert
+        hasExecuted.Should().BeTrue();
+    }
 
-            // Assert
-            registeredTests.Should().ContainSingle();
-            registeredTests[0].Title.Should().Be("My test");
-            registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
-            registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string?>
+    [Fact]
+    public void I_can_register_multiple_tests()
+    {
+        // Act
+        TestController.TestMany(
+            new[]
             {
-                ["foo"] = "bar",
-                ["baz"] = null
-            });
-            registeredTests[0].IsSkipped.Should().BeFalse();
-        }
+                new {Foo = 1, Bar = 2},
+                new {Foo = 3, Bar = 4},
+                new {Foo = 5, Bar = 6}
+            },
+            p => $"My test ({p.Foo} {p.Bar})",
+            p => { }
+        );
 
-        [Fact]
-        public async Task I_can_register_a_single_test_and_it_executes_correctly()
-        {
-            // Arrange
-            var hasExecuted = false;
+        var registeredTests = TestController.GetRegisteredTests();
 
-            // Act
-            TestController.Test(
-                "My test",
-                () => hasExecuted = true
-            );
+        // Assert
+        registeredTests.Should().HaveCount(3);
 
-            foreach (var test in TestController.GetRegisteredTests())
-                await test.ExecuteAsync();
+        registeredTests[0].Title.Should().Be("My test (1 2)");
+        registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+        registeredTests[0].Traits.Should().BeEmpty();
+        registeredTests[0].IsSkipped.Should().BeFalse();
 
-            // Assert
-            hasExecuted.Should().BeTrue();
-        }
+        registeredTests[1].Title.Should().Be("My test (3 4)");
+        registeredTests[1].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+        registeredTests[1].Traits.Should().BeEmpty();
+        registeredTests[1].IsSkipped.Should().BeFalse();
 
-        [Fact]
-        public async Task I_can_register_a_single_async_test_and_it_executes_correctly()
-        {
-            // Arrange
-            var hasExecuted = false;
+        registeredTests[2].Title.Should().Be("My test (5 6)");
+        registeredTests[2].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+        registeredTests[2].Traits.Should().BeEmpty();
+        registeredTests[2].IsSkipped.Should().BeFalse();
+    }
 
-            // Act
-            TestController.Test(
-                "My test",
-                async () =>
-                {
-                    await Task.Yield();
-                    hasExecuted = true;
-                }
-            );
-
-            foreach (var test in TestController.GetRegisteredTests())
-                await test.ExecuteAsync();
-
-            // Assert
-            hasExecuted.Should().BeTrue();
-        }
-
-        [Fact]
-        public void I_can_register_multiple_tests()
-        {
-            // Act
-            TestController.TestMany(
-                new[]
-                {
-                    new {Foo = 1, Bar = 2},
-                    new {Foo = 3, Bar = 4},
-                    new {Foo = 5, Bar = 6}
-                },
-                p => $"My test ({p.Foo} {p.Bar})",
-                p => { }
-            );
-
-            var registeredTests = TestController.GetRegisteredTests();
-
-            // Assert
-            registeredTests.Should().HaveCount(3);
-
-            registeredTests[0].Title.Should().Be("My test (1 2)");
-            registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
-            registeredTests[0].Traits.Should().BeEmpty();
-            registeredTests[0].IsSkipped.Should().BeFalse();
-
-            registeredTests[1].Title.Should().Be("My test (3 4)");
-            registeredTests[1].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
-            registeredTests[1].Traits.Should().BeEmpty();
-            registeredTests[1].IsSkipped.Should().BeFalse();
-
-            registeredTests[2].Title.Should().Be("My test (5 6)");
-            registeredTests[2].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
-            registeredTests[2].Traits.Should().BeEmpty();
-            registeredTests[2].IsSkipped.Should().BeFalse();
-        }
-
-        [Fact]
-        public void I_can_register_multiple_tests_with_traits()
-        {
-            // Act
-            TestController.TestMany(
-                new[]
-                {
-                    new {Foo = 1, Bar = 2},
-                    new {Foo = 3, Bar = 4},
-                    new {Foo = 5, Bar = 6}
-                },
-                (p, o) => o.Trait("Foo", p.Foo.ToString()),
-                p => $"My test ({p.Foo} {p.Bar})",
-                p => { }
-            );
-
-            var registeredTests = TestController.GetRegisteredTests();
-
-            // Assert
-            registeredTests.Should().HaveCount(3);
-
-            registeredTests[0].Title.Should().Be("My test (1 2)");
-            registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
-            registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
+    [Fact]
+    public void I_can_register_multiple_tests_with_traits()
+    {
+        // Act
+        TestController.TestMany(
+            new[]
             {
-                ["Foo"] = "1"
-            });
-            registeredTests[0].IsSkipped.Should().BeFalse();
+                new {Foo = 1, Bar = 2},
+                new {Foo = 3, Bar = 4},
+                new {Foo = 5, Bar = 6}
+            },
+            (p, o) => o.Trait("Foo", p.Foo.ToString()),
+            p => $"My test ({p.Foo} {p.Bar})",
+            p => { }
+        );
 
-            registeredTests[1].Title.Should().Be("My test (3 4)");
-            registeredTests[1].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
-            registeredTests[1].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
-            {
-                ["Foo"] = "3"
-            });
-            registeredTests[1].IsSkipped.Should().BeFalse();
+        var registeredTests = TestController.GetRegisteredTests();
 
-            registeredTests[2].Title.Should().Be("My test (5 6)");
-            registeredTests[2].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
-            registeredTests[2].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
-            {
-                ["Foo"] = "5"
-            });
-            registeredTests[2].IsSkipped.Should().BeFalse();
-        }
+        // Assert
+        registeredTests.Should().HaveCount(3);
 
-        [Fact]
-        public void I_can_register_multiple_async_tests_with_traits()
+        registeredTests[0].Title.Should().Be("My test (1 2)");
+        registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+        registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
         {
-            // Act
-            TestController.TestMany(
-                new[]
-                {
-                    new {Foo = 1, Bar = 2},
-                    new {Foo = 3, Bar = 4},
-                    new {Foo = 5, Bar = 6}
-                },
-                (p, o) => o.Trait("Foo", p.Foo.ToString()),
-                p => $"My test ({p.Foo} {p.Bar})",
-                async p => await Task.Yield()
-            );
+            ["Foo"] = "1"
+        });
+        registeredTests[0].IsSkipped.Should().BeFalse();
 
-            var registeredTests = TestController.GetRegisteredTests();
-
-            // Assert
-            registeredTests.Should().HaveCount(3);
-
-            registeredTests[0].Title.Should().Be("My test (1 2)");
-            registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
-            registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
-            {
-                ["Foo"] = "1"
-            });
-            registeredTests[0].IsSkipped.Should().BeFalse();
-
-            registeredTests[1].Title.Should().Be("My test (3 4)");
-            registeredTests[1].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
-            registeredTests[1].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
-            {
-                ["Foo"] = "3"
-            });
-            registeredTests[1].IsSkipped.Should().BeFalse();
-
-            registeredTests[2].Title.Should().Be("My test (5 6)");
-            registeredTests[2].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
-            registeredTests[2].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
-            {
-                ["Foo"] = "5"
-            });
-            registeredTests[2].IsSkipped.Should().BeFalse();
-        }
-
-        [Fact]
-        public async Task I_can_register_multiple_tests_and_they_execute_correctly()
+        registeredTests[1].Title.Should().Be("My test (3 4)");
+        registeredTests[1].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+        registeredTests[1].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
         {
-            // Arrange
-            var executeCount = 0;
+            ["Foo"] = "3"
+        });
+        registeredTests[1].IsSkipped.Should().BeFalse();
 
-            // Act
-            TestController.TestMany(
-                new[]
-                {
-                    new {Foo = 1, Bar = 2},
-                    new {Foo = 3, Bar = 4},
-                    new {Foo = 5, Bar = 6}
-                },
-                p => $"My test ({p.Foo} {p.Bar})",
-                p => executeCount++
-            );
-
-            foreach (var test in TestController.GetRegisteredTests())
-                await test.ExecuteAsync();
-
-            // Assert
-            executeCount.Should().Be(3);
-        }
-
-        [Fact]
-        public async Task I_can_register_multiple_async_tests_and_they_execute_correctly()
+        registeredTests[2].Title.Should().Be("My test (5 6)");
+        registeredTests[2].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+        registeredTests[2].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
         {
-            // Arrange
-            var executeCount = 0;
+            ["Foo"] = "5"
+        });
+        registeredTests[2].IsSkipped.Should().BeFalse();
+    }
 
-            // Act
-            TestController.TestMany(
-                new[]
-                {
-                    new {Foo = 1, Bar = 2},
-                    new {Foo = 3, Bar = 4},
-                    new {Foo = 5, Bar = 6}
-                },
-                p => $"My test ({p.Foo} {p.Bar})",
-                async p =>
-                {
-                    await Task.Yield();
-                    executeCount++;
-                });
+    [Fact]
+    public void I_can_register_multiple_async_tests_with_traits()
+    {
+        // Act
+        TestController.TestMany(
+            new[]
+            {
+                new {Foo = 1, Bar = 2},
+                new {Foo = 3, Bar = 4},
+                new {Foo = 5, Bar = 6}
+            },
+            (p, o) => o.Trait("Foo", p.Foo.ToString()),
+            p => $"My test ({p.Foo} {p.Bar})",
+            async p => await Task.Yield()
+        );
 
-            foreach (var test in TestController.GetRegisteredTests())
-                await test.ExecuteAsync();
+        var registeredTests = TestController.GetRegisteredTests();
 
-            // Assert
-            executeCount.Should().Be(3);
-        }
+        // Assert
+        registeredTests.Should().HaveCount(3);
+
+        registeredTests[0].Title.Should().Be("My test (1 2)");
+        registeredTests[0].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+        registeredTests[0].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
+        {
+            ["Foo"] = "1"
+        });
+        registeredTests[0].IsSkipped.Should().BeFalse();
+
+        registeredTests[1].Title.Should().Be("My test (3 4)");
+        registeredTests[1].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+        registeredTests[1].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
+        {
+            ["Foo"] = "3"
+        });
+        registeredTests[1].IsSkipped.Should().BeFalse();
+
+        registeredTests[2].Title.Should().Be("My test (5 6)");
+        registeredTests[2].Assembly.Should().BeSameAs(typeof(RegistrationSpecs).Assembly);
+        registeredTests[2].Traits.Should().BeEquivalentTo(new Dictionary<string, string>
+        {
+            ["Foo"] = "5"
+        });
+        registeredTests[2].IsSkipped.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task I_can_register_multiple_tests_and_they_execute_correctly()
+    {
+        // Arrange
+        var executeCount = 0;
+
+        // Act
+        TestController.TestMany(
+            new[]
+            {
+                new {Foo = 1, Bar = 2},
+                new {Foo = 3, Bar = 4},
+                new {Foo = 5, Bar = 6}
+            },
+            p => $"My test ({p.Foo} {p.Bar})",
+            p => executeCount++
+        );
+
+        foreach (var test in TestController.GetRegisteredTests())
+            await test.ExecuteAsync();
+
+        // Assert
+        executeCount.Should().Be(3);
+    }
+
+    [Fact]
+    public async Task I_can_register_multiple_async_tests_and_they_execute_correctly()
+    {
+        // Arrange
+        var executeCount = 0;
+
+        // Act
+        TestController.TestMany(
+            new[]
+            {
+                new {Foo = 1, Bar = 2},
+                new {Foo = 3, Bar = 4},
+                new {Foo = 5, Bar = 6}
+            },
+            p => $"My test ({p.Foo} {p.Bar})",
+            async p =>
+            {
+                await Task.Yield();
+                executeCount++;
+            });
+
+        foreach (var test in TestController.GetRegisteredTests())
+            await test.ExecuteAsync();
+
+        // Assert
+        executeCount.Should().Be(3);
     }
 }
