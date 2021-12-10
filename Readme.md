@@ -7,7 +7,7 @@
 [![Discord](https://img.shields.io/discord/869237470565392384?label=discord)](https://discord.gg/2SUWKFnHSm)
 [![Donate](https://img.shields.io/badge/donate-$$$-purple.svg)](https://tyrrrz.me/donate)
 
-⚠️ **Project status: suspended** (waiting on a [C# language proposal](https://github.com/dotnet/csharplang/issues/4163)). [What does it mean?](https://github.com/Tyrrrz/shared/blob/master/docs/project-status.md)
+⚠️ **Project status: suspended** (waiting on a [C# language proposal](https://github.com/dotnet/csharplang/issues/4163)). [What does it mean?](https://github.com/Tyrrrz/.github/blob/master/docs/project-status.md)
 
 **Hallstatt** is a simple and straightforward testing framework for C#.
 Instead of relying on the traditional approach for defining tests through class methods and attributes, **Hallstatt** tests are defined using top-level statements and lambdas, resulting in more concise code and avoiding many associated limitations in the process.
