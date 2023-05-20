@@ -6,22 +6,21 @@
 [![Downloads](https://img.shields.io/nuget/dt/Hallstatt.svg)](https://nuget.org/packages/Hallstatt)
 [![Discord](https://img.shields.io/discord/869237470565392384?label=discord)](https://discord.gg/2SUWKFnHSm)
 [![Donate](https://img.shields.io/badge/donate-$$$-purple.svg)](https://tyrrrz.me/donate)
-[![Fuck Russia](https://img.shields.io/badge/fuck-russia-black.svg)](https://twitter.com/Tyrrrz/status/1495972128977571848)
 
-⚠️ **Project status: suspended** (waiting on a [C# language proposal](https://github.com/dotnet/csharplang/issues/4163)). [What does it mean?](https://github.com/Tyrrrz/.github/blob/master/docs/project-status.md)
+> 🔴 **Project status: suspended**<sup>[[?]](https://github.com/Tyrrrz/.github/blob/master/docs/project-status.md)</sup> (waiting on a [C# language proposal](https://github.com/dotnet/csharplang/issues/4163))
 
 **Hallstatt** is a simple and straightforward testing framework for C#.
 Instead of relying on the traditional approach for defining tests through class methods and attributes, **Hallstatt** tests are defined using top-level statements and lambdas, resulting in more concise code and avoiding many associated limitations in the process.
 
 This library is inspired by JavaScript testing frameworks and F#'s [Expecto](https://github.com/haf/expecto).
 
-**Note: this is an experimental project and is not yet recommended for production use**.
+> **Note**:
+> This is an experimental project and is not yet recommended for production use**.
 
 ## Download
 
-📦 [NuGet (Hallstatt)](https://nuget.org/packages/Hallstatt): `dotnet add package Hallstatt`
-
-📦 [NuGet (Hallstatt.TestAdapter)](https://nuget.org/packages/Hallstatt.TestAdapter): `dotnet add package Hallstatt.TestAdapter`
+- [NuGet (Hallstatt)](https://nuget.org/packages/Hallstatt): `dotnet add package Hallstatt`
+- [NuGet (Hallstatt.TestAdapter)](https://nuget.org/packages/Hallstatt.TestAdapter): `dotnet add package Hallstatt.TestAdapter`
 
 ## Usage
 
