@@ -15,7 +15,7 @@ Instead of relying on the traditional approach for defining tests through class 
 This library is inspired by JavaScript testing frameworks and F#'s [Expecto](https://github.com/haf/expecto).
 
 > **Note**:
-> This is an experimental project and is not yet recommended for production use**.
+> This is an experimental project and is not yet recommended for production use.
 
 ## Download
 
